@@ -7,3 +7,7 @@ module.exports = class LightbotInstruction
     if @color? and not @color in colors
       throw new Error("invalid color: #{@color}")
 
+  draw: ->
+    line = @action
+    line = "[#{if @color is 'red' then 31 else 32}m#{line}[0m" if @color
+    console.log line

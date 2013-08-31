@@ -1,12 +1,31 @@
-_ = require 'underscore'
+_      = require 'underscore'
+Square = require './square'
+Bot    = require './bot'
+Instr  = require './instruction'
+Prog   = require './program'
 
-module.exports = class LightBotGame
+module.exports = class LightbotGame
   constructor: (@board, @bot, @prog) ->
     @ended  = false
     @looped = false
     @goals  = []
     @seen   = {}
     @eachSquare (sq) => @goals.push sq if sq.goal
+
+  @load: (data) ->
+    board = data.board
+    for row in board
+      for square, i in row
+        row[i] = new Square square
+
+    bot = new Bot data.bot.x, data.bot.y, data.bot.dir, data.bot.color
+
+    for proc, instrs of data.prog
+      data.prog[proc] = instrs.map (instr) ->
+        new Instr instr.action, instr.color
+    prog = new Prog data.prog
+
+    new LightbotGame board, bot, prog
 
   eachSquare: (fn) ->
     for row in @board
@@ -31,6 +50,7 @@ module.exports = class LightBotGame
     state = @state()
     @looped = true if @seen[state]
     @seen[state] = true
+    instr
 
   state: ->
     board_state = @goals.map((g) -> if g.tagged then 'y' else 'n').join('')
@@ -43,11 +63,11 @@ module.exports = class LightBotGame
         attrs = []
         char  =
           if x is @bot.x and y is @bot.y
+            attrs.push 31 if @bot.color is 'red'
+            attrs.push 32 if @bot.color is 'green'
             ['^', '>', 'v', '<'][@bot.dir]
           else
             square.elev
-        attrs.push 31 if @bot.color is 'red'
-        attrs.push 32 if @bot.color is 'green'
         attrs.push 41 if square.color is 'red'
         attrs.push 42 if square.color is 'green'
         attrs.push 1 if square.goal
