@@ -5,3 +5,7 @@ module.exports = class LightbotSquare
     @elev   ?= 0
     @goal   ?= true
     @tagged ?= false
+
+    @goal   = false if @color
+    @color  = null  if @goal
+    @tagged = false unless @goal

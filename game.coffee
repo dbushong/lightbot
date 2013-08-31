@@ -52,7 +52,7 @@ module.exports = class LightBotGame
             when 1 then [@bot.y, @bot.x+1]
             when 2 then [@bot.y+1, @bot.x]
             when 3 then [@bot.y, @bot.x-1]
-          next = @board[y][x]
+          next = @board[y]?[x]
           if next
             if instr.action is 'forward'
               @bot.moveTo x, y if next.elev is square.elev
