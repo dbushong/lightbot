@@ -36,7 +36,26 @@ module.exports = class LightBotGame
     board_state = @goals.map((g) -> if g.tagged then 'y' else 'n').join('')
     board_state + '/' + @prog.state() + '/' + @bot.state()
 
-  draw: -> console.log @state()
+  draw: ->
+    console.log '----------'
+    for row, y in @board
+      chars = row.map (square, x) =>
+        attrs = []
+        char  =
+          if x is @bot.x and y is @bot.y
+            ['^', '>', 'v', '<'][@bot.dir]
+          else
+            square.elev
+        attrs.push 31 if @bot.color is 'red'
+        attrs.push 32 if @bot.color is 'green'
+        attrs.push 41 if square.color is 'red'
+        attrs.push 42 if square.color is 'green'
+        attrs.push 1 if square.goal
+        attrs.push 4 if square.tagged
+        char = "[#{attrs.join(';')}m#{char}[0m" if attrs.length
+        char
+
+      console.log chars.join ''
 
   execute: (instr) ->
     unless instr.color and (instr.color isnt @bot.color)
