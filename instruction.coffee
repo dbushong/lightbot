@@ -1,4 +1,4 @@
-actions = [ 'forward', 'right', 'left', 'jump', 'bulb' ]
+actions = [ 'forward', 'right', 'left', 'jump', 'bulb', 'p1', 'p2' ]
 colors  = [ 'green', 'red' ]
 
 module.exports = class LightbotInstruction
