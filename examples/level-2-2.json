@@ -1,0 +1,35 @@
+{ "board":
+  [ [ { "goal": false, "elev": 2 }
+    , { "goal": false }
+    , { "goal": false, "elev": 2 }
+    , { "goal": false, "elev": 2 }
+    , { "goal": false, "elev": 2 }
+    ]
+  , [ { "goal": false, "elev": 2 }
+    , { "goal": false }
+    , { "goal": false, "elev": 2 }
+    , { "goal": false }
+    , { "goal": false, "elev": 2 }
+    ]
+  , [ { "goal": false, "elev": 2 }
+    , { "goal": false, "elev": 2 }
+    , { "goal": false, "elev": 2 }
+    , { "goal": false }
+    , { "elev": 2 }
+    ]
+  ]
+, "bot": { "x": 0, "y": 0, "dir": 2 }
+, "prog": { "main": [ { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    , { "action": "right" }
+                    , { "action": "p1" }
+                    , { "action": "right" }
+                    , { "action": "p1" }
+                    , { "action": "bulb" }
+                    ]
+          , "p1": [ { "action": "forward" }, { "action": "forward" } ]
+          }
+}

@@ -18,8 +18,10 @@ game.draw();
 
 while (!game.over()) {
   var instr = game.tick();
-  if (instr) instr.draw();
-  game.draw()
+  if (instr) {
+    instr.draw();
+    game.draw()
+  }
 }
 
 if (game.looped)

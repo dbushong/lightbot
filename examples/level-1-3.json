@@ -1,0 +1,18 @@
+{ "board":
+  [ [ { "goal": false }, { "goal": false }, {} ]
+  , [ { "goal": false, "elev": 1 }
+    , { "goal": false, "elev": 1 }
+    , { "goal": false, "elev": 1 }
+    ]
+  , [ { "goal": false }, { "goal": false }, { "goal": false } ]
+  ]
+, "bot": { "x": 0, "y": 2, "dir": 1 }
+, "prog": { "main": [ { "action": "forward" }
+                    , { "action": "forward" }
+                    , { "action": "left" }
+                    , { "action": "jump" }
+                    , { "action": "jump" }
+                    , { "action": "bulb" }
+                    ]
+          }
+}
