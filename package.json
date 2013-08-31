@@ -1,5 +1,11 @@
-{ "name":         "lightbot"
-, "description":  "Light-bot simulator"
-, "version":      "0.0.1"
-, "dependencies": { "underscore": "1.5.x" }
+{ "name":            "lightbot"
+, "description":     "Light-bot simulator"
+, "version":         "0.0.2"
+, "main":            "lib/index.js"
+, "dependencies":    { "underscore": "1.5.x" }
+, "devDependencies": { "coffee-script": "1.6.x" }
+, "scripts":         { "prepublish": "coffee -o lib/ -c src/*.coffee" }
+, "repository" :     { "type" : "git"
+                     , "url" : "http://github.com/dbushong/lightbot.git"
+                     }
 }

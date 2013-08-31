@@ -1,0 +1,60 @@
+{ "board":
+  [ [ { "color": "green" }, {}, {}, {}, {}, {}, { "color": "green" } ]
+  , [ {}
+    , { "color": "green", "elev": 1 }
+    , { "elev": 1 } 
+    , { "elev": 1 } 
+    , { "elev": 1 } 
+    , { "color": "green", "elev": 1 }
+    , {}
+    ]
+  , [ {}
+    , { "elev": 1 }
+    , { "color": "green", "elev": 2 }
+    , { "elev": 2 }
+    , { "color": "green", "elev": 2 }
+    , { "elev": 1 }
+    , {}
+    ]
+  , [ {}
+    , { "elev": 1 }
+    , { "elev": 2 }
+    , { "elev": 3 }
+    , { "elev": 2 }
+    , { "elev": 1 }
+    , {}
+    ]
+  , [ {}
+    , { "elev": 1 }
+    , { "elev": 2 }
+    , { "color": "red", "elev": 2 }
+    , { "color": "green", "elev": 2 }
+    , { "elev": 1 }
+    , {}
+    ]
+  , [ {}
+    , { "elev": 1 }
+    , { "color": "red", "elev": 1 } 
+    , { "elev": 1 } 
+    , { "elev": 1 } 
+    , { "color": "green", "elev": 1 }
+    , {}
+    ]
+  , [ {}, { "color": "red" }, {}, {}, {}, {}, { "color": "green" } ]
+  ]
+, "bot": { "x": 0, "y": 6, "dir": 0 }
+, "prog": { "main": [ { "action": "p1" } ]
+          , "p1": [ { "action": "bulb" }
+                  , { "action": "jump" }
+                  , { "action": "forward" }
+                  , { "action": "right", "color": "green" }
+                  , { "action": "right", "color": "red" }
+                  , { "action": "right", "color": "red" }
+                  , { "action": "forward", "color": "red" }
+                  , { "action": "p2" }
+                  ]
+          , "p2": [ { "action": "left", "color": "red" }
+                  , { "action": "p1" }
+                  ]
+          }
+}

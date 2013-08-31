@@ -1,0 +1,27 @@
+#!/usr/bin/env coffee
+
+Lightbot = require './lightbot'
+
+troll = new (require('troll-opt').Troll)
+opts  = troll.options (t) ->
+  t.banner 'Does stuff'
+  t.opt 'help', 'Display this help text', short: 'h'
+
+if opts.help
+  troll.usage()
+  process.exit 1
+
+game = Lightbot.Game.load(require('./level-6-4.json'))
+console.log 'START'
+game.draw()
+
+while not game.over()
+  game.tick()?.draw()
+  game.draw()
+
+if game.looped
+  console.log 'You looped; you lose'
+else if game.ended
+  console.log 'Your program ended without hitting all the goals; you lose'
+else
+  console.log 'You hit all the goals; you win!'
