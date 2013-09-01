@@ -59,15 +59,15 @@
 , "bot": { "x": 0, "y": 6, "dir": 0 }
 , "prog": { "main": [ { "action": "p1" } ]
           , "p1": [ { "action": "bulb" }
-                  , { "action": "jump" }
                   , { "action": "forward" }
+                  , { "action": "bulb" }
                   , { "action": "right", "color": "green" }
+                  , { "action": "bulb", "color": "green" }
                   , { "action": "right", "color": "red" }
-                  , { "action": "right", "color": "red" }
-                  , { "action": "forward", "color": "red" }
+                  , { "action": "bulb" }
                   , { "action": "p2" }
                   ]
-          , "p2": [ { "action": "left", "color": "red" }
+          , "p2": [ { "action": "jump" }
                   , { "action": "p1" }
                   ]
           }
