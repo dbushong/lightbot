@@ -2,6 +2,7 @@
 
 var Lightbot = require('../');
 var path     = require('path');
+var fs       = require('fs');
 var prog     = path.basename(process.argv[1]);
 
 if (process.argv.length != 3 || /^-/.test(process.argv[2])) {
@@ -9,10 +10,7 @@ if (process.argv.length != 3 || /^-/.test(process.argv[2])) {
   process.exit(1);
 }
 
-var lvl = process.argv[2];
-if (!/\//.test(lvl)) lvl = './' + lvl ;
-
-var game = Lightbot.Game.load(require(lvl));
+var game = Lightbot.Game.load(JSON.parse(fs.readFileSync(process.argv[2])));
 console.log('START');
 game.draw();
 
