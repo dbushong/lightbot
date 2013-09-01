@@ -12,6 +12,13 @@ module.exports = class LightbotProgram
       [ @cur_proc, @pc ] = @callers.pop()
       @pc++
 
+  returnFromProc: ->
+    if @callers.length
+      [ @cur_proc, @pc ] = @callers.pop()
+      @pc++
+    else
+      @pc = @procs[@cur_proc].length - 1 # put us at the end of main
+
   callProc: (p) ->
     @callers.push [ @cur_proc, @pc ]
     @cur_proc = p

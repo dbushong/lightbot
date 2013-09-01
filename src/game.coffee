@@ -119,5 +119,7 @@ module.exports = class LightbotGame
           @bot.turnRight()
         when 'left'
           @bot.turnLeft()
+        when 'return'
+          @prog.returnFromProc()
 
     @prog.increment()
