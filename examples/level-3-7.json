@@ -1,0 +1,54 @@
+{ "board":
+  [ [ {}
+    , { "lift": true }
+    , { "elev": 4 }
+    , { "elev": 4 }
+    , { "elev": 4 }
+    , { "elev": 4 }
+    ]
+  , [ {}, {}, {}, {}, {}, { "elev": 3 } ]
+  , [ { "elev": 2, "warp": [0,4] }
+    , { "elev": 2 }
+    , { "elev": 4, "lift": true }
+    , { "elev": 4 }
+    , { "elev": 2, "lift": true }
+    , { "elev": 3 }
+    ]
+  , [ {}, {}, {}, {}, {}, {} ]
+  , [ { "elev": 2, "warp": [0,2] }
+    , { "elev": 2, "warp": [3,4] }
+    , {}
+    , { "elev": 2, "warp": [1,4] }
+    , { "elev": 2, "lift": true }
+    , { "elev": 4, "goal": true }
+    ]
+  ]
+, "bot": { "x": 0, "y": 0, "dir": 1 }
+, "prog": { "main": [ { "action": "forward" }
+                    , { "action": "bulb" }
+                    , { "action": "p2" }
+                    , { "action": "p2" }
+                    , { "action": "right" }
+                    , { "action": "jump" }
+                    , { "action": "forward" }
+                    , { "action": "right" }
+                    , { "action": "jump" }
+                    , { "action": "p2" }
+                    , { "action": "bulb" }
+                    , { "action": "p1" }
+                    ]
+          , "p1": [ { "action": "p2" }
+                  , { "action": "bulb" }
+                  , { "action": "right" }
+                  , { "action": "right" }
+                  , { "action": "forward" }
+                  , { "action": "p2" }
+                  , { "action": "p2" }
+                  , { "action": "bulb" }
+                  ]
+          , "p2": [ { "action": "bulb" }
+                  , { "action": "forward" }
+                  , { "action": "forward" }
+                  ]
+          }
+}

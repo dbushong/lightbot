@@ -113,6 +113,8 @@ module.exports = class LightbotGame
               when 2 then 4
               when 4 then 0
               else throw "invalid lift elevation: #{square.elev}"
+          else if square.warp
+            @bot.moveTo square.warp...
         when 'right'
           @bot.turnRight()
         when 'left'
