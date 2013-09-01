@@ -5,7 +5,7 @@
 , "engine":          { "node": ">=0.5.0" }
 , "dependencies":    { "underscore": "1.5.x" }
 , "devDependencies": { "coffee-script": "1.6.x" }
-, "scripts":         { "prepublish": "coffee -o lib/ -c src/*.coffee" }
+, "scripts":         { "prepublish": "./node_modules/.bin/coffee -o lib/ -c src/*.coffee" }
 , "repository" :     { "type" : "git"
                      , "url" : "http://github.com/dbushong/lightbot.git"
                      }

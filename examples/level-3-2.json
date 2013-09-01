@@ -1,0 +1,53 @@
+{ "board":
+  [ [ { "goal": false }
+    , { "elev": 4 }
+    , { "goal": false }
+    , { "elev": 4 }
+    , { "goal": false }
+    , { "elev": 4 }
+    , { "goal": false }
+    ]
+  , [ { "goal": false, "elev": 2 }
+    , { "goal": false, "elev": 4 }
+    , { "elev": 2 }
+    , { "goal": false, "elev": 4 }
+    , { "elev": 2 }
+    , { "goal": false, "elev": 4 }
+    , { "elev": 2 }
+    ]
+  , [ { "goal": false }
+    , { "lift": true }
+    , { "goal": false }
+    , { "lift": true }
+    , { "goal": false }
+    , { "lift": true }
+    , { "goal": false }
+    ]
+  ]
+, "bot": { "x": 0, "y": 2, "dir": 1 }
+, "prog": { "main": [ { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    ]
+          , "p1": [ { "action": "forward" }
+                  , { "action": "left" }
+                  , { "action": "bulb" }
+                  , { "action": "bulb" }
+                  , { "action": "forward" }
+                  , { "action": "forward" }
+                  , { "action": "bulb" }
+                  , { "action": "p2" }
+                  ]
+          , "p2": [ { "action": "right" }
+                  , { "action": "right" }
+                  , { "action": "forward" }
+                  , { "action": "left" }
+                  , { "action": "jump" }
+                  , { "action": "bulb" }
+                  , { "action": "right" }
+                  , { "action": "jump" }
+                  ]
+          }
+}

@@ -72,6 +72,7 @@ module.exports = class LightbotGame
         attrs.push 42 if square.color is 'green'
         attrs.push 1 if square.goal
         attrs.push 4 if square.tagged
+        attrs.push 7 if square.lift
         char = "[#{attrs.join(';')}m#{char}[0m" if attrs.length
         char
 
@@ -96,7 +97,7 @@ module.exports = class LightbotGame
             if instr.action is 'forward'
               @bot.moveTo x, y if next.elev is square.elev
             else # if instr.action is 'jump'
-              @bot.moveTo x, y if Math.abs(next.elev - square.elev) is 1
+              @bot.moveTo x, y if 0 < Math.abs(next.elev - square.elev) < 3
         when 'bulb'
           square = @board[@bot.y][@bot.x]
           if square.goal
@@ -104,6 +105,12 @@ module.exports = class LightbotGame
           else if square.color
             @bot.color =
               if @bot.color is square.color then null else square.color
+          else if square.lift
+            square.elev = switch square.elev
+              when 0 then 2
+              when 2 then 4
+              when 4 then 0
+              else throw "invalid lift elevation: #{square.elev}"
         when 'right'
           @bot.turnRight()
         when 'left'

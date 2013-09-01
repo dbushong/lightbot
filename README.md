@@ -19,4 +19,3 @@ TODO
 ----
 
 * teleporters
-* elevators
