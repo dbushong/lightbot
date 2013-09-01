@@ -97,7 +97,9 @@ module.exports = class LightbotGame
             if instr.action is 'forward'
               @bot.moveTo x, y if next.elev is square.elev
             else # if instr.action is 'jump'
-              @bot.moveTo x, y if 0 < Math.abs(next.elev - square.elev) < 3
+              diff = next.elev - square.elev
+              # can jump up 1 or down any
+              @bot.moveTo x, y if diff is 1 or diff < 0
         when 'bulb'
           square = @board[@bot.y][@bot.x]
           if square.goal

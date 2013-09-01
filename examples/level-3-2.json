@@ -1,28 +1,21 @@
 { "board":
-  [ [ { "goal": false }
-    , { "elev": 4 }
-    , { "goal": false }
-    , { "elev": 4 }
-    , { "goal": false }
-    , { "elev": 4 }
-    , { "goal": false }
+  [ [ {}
+    , { "elev": 4, "goal": true }
+    , {}
+    , { "elev": 4, "goal": true }
+    , {}
+    , { "elev": 4, "goal": true }
+    , {}
     ]
-  , [ { "goal": false, "elev": 2 }
-    , { "goal": false, "elev": 4 }
-    , { "elev": 2 }
-    , { "goal": false, "elev": 4 }
-    , { "elev": 2 }
-    , { "goal": false, "elev": 4 }
-    , { "elev": 2 }
+  , [ { "elev": 2 }
+    , { "elev": 4 }
+    , { "elev": 2, "goal": true }
+    , { "elev": 4 }
+    , { "elev": 2, "goal": true }
+    , { "elev": 4 }
+    , { "elev": 2, "goal": true }
     ]
-  , [ { "goal": false }
-    , { "lift": true }
-    , { "goal": false }
-    , { "lift": true }
-    , { "goal": false }
-    , { "lift": true }
-    , { "goal": false }
-    ]
+  , [ {}, { "lift": true }, {}, { "lift": true }, {}, { "lift": true }, {} ]
   ]
 , "bot": { "x": 0, "y": 2, "dir": 1 }
 , "prog": { "main": [ { "action": "p1" }

@@ -1,10 +1,7 @@
 { "board":
-  [ [ { "goal": false }, { "goal": false }, {} ]
-  , [ { "goal": false, "elev": 1 }
-    , { "goal": false, "elev": 1 }
-    , { "goal": false, "elev": 1 }
-    ]
-  , [ { "goal": false }, { "goal": false }, { "goal": false } ]
+  [ [ {}, {}, { "goal": true } ]
+  , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
+  , [ {}, {}, {} ]
   ]
 , "bot": { "x": 0, "y": 2, "dir": 1 }
 , "prog": { "main": [ { "action": "forward" }
