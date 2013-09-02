@@ -1,0 +1,55 @@
+{ "board":
+  [ [ { "elev": 1 }
+    , { "elev": 1 }
+    , { "elev": 1, "color": "green" }
+    , {}
+    , { "color": "green" }
+    , { "elev": 1 }
+    , { "elev": 1, "color": "red" }
+    ]
+  , [ {}, {}, {}, {}, {}, {}, { "elev": 1, "color": "green" } ]
+  , [ { "elev": 2, "color": "red" }
+    , { "elev": 2 }
+    , { "elev": 2 }
+    , { "elev": 2, "color": "red" }
+    , {}
+    , { "elev": 2, "goal": true }
+    , {}
+    ]
+  , [ { "elev": 2 }
+    , {}
+    , {}
+    , { "elev": 2, "color": "green" }
+    , {}
+    , { "elev": 2 }
+    , {}
+    ]
+  , [ { "elev": 2, "color": "red" }
+    , { "elev": 1, "color": "green" }
+    , { "elev": 1, "color": "red" }
+    , { "color": "red", "elev": 3 }
+    , { "color": "green", "elev": 3 }
+    , { "color": "red", "elev": 2 }
+    , { "color": "green" }
+    ]
+  , [ {}, {}, { "color": "green" }, {}, {}, {}, { "elev": 1 } ]
+  , [ {}
+    , {}
+    , { "color": "red" }
+    , { "elev": 1, "color": "green" }
+    , { "elev": 1 }
+    , { "elev": 1 }
+    , { "elev": 1, "color": "red" }
+    ]
+  ]
+, "bot": { "x": 0, "y": 0, "dir": 1 }
+, "prog": { "main": [ { "action": "p1" } ]
+          , "p1": [ { "action": "bulb" }
+                  , { "action": "right", "color": "red" }
+                  , { "action": "bulb", "color": "red" }
+                  , { "action": "forward" }
+                  , { "action": "jump", "color": "green" }
+                  , { "action": "p1" }
+                  ]
+          }
+}
