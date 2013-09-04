@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Lightbot Web Usage Demo</title>
+  </head>
+  <body>
+    <ul id="output"></ul>
+    <script src="lightbot.js"></script> 
+    <script>
+      var output = document.getElementById('output');
+      function log(msg) {
+        var li = document.createElement('li');
+        li.innerHTML = msg;
+        output.appendChild(li);
+      }
+      var game = Lightbot.Game.load(
+        { "board":
+          [ [ {}, {}, {} ]
+          , [ {}, {}, { "goal": true } ]
+          , [ {}, {}, {} ]
+          ]
+        , "bot": { "x": 0, "y": 1, "dir": 1 }
+        , "prog": { "main": [ { "action": "forward" }
+                            , { "action": "forward" }
+                            , { "action": "bulb" }
+                            ]
+                  }
+        }
+      );
+      window.onload = function () {
+        log('START');
+        while (!game.over()) {
+          var instr = game.tick();
+          if (instr) {
+            msg = instr.action; 
+            if (instr.color) {
+              var color = (instr.color === 'red') ? '#f00' : '#0f0';
+              msg = '<span style="color: ' + color + '">' + msg + '</span>';
+            }
+            log(msg);
+          }
+        }
+
+        if (game.looped)
+          log('You looped; you lose');
+        else if (game.ended)
+          log('Your program ended without hitting all the goals; you lose');
+        else
+          log('You hit all the goals; you win!');
+      };
+    </script>
+  </body>
+</html>

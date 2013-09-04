@@ -1,4 +1,3 @@
-_      = require 'underscore'
 Square = require './square'
 Bot    = require './bot'
 Instr  = require './instruction'
@@ -33,7 +32,7 @@ module.exports = class LightbotGame
         fn square
     null
 
-  won: -> _.all @goals, (g) -> g.tagged
+  won: -> @goals.filter((g) -> g.tagged).length is @goals.length
 
   lost: -> @ended or @looped
   

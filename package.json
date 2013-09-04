@@ -3,9 +3,10 @@
 , "version":         "0.0.2"
 , "main":            "lib/index.js"
 , "engine":          { "node": ">=0.5.0" }
-, "dependencies":    { "underscore": "1.5.x" }
-, "devDependencies": { "coffee-script": "1.6.x" }
-, "scripts":         { "prepublish": "./node_modules/.bin/coffee -o lib/ -c src/*.coffee" }
+, "devDependencies": { "coffee-script": "1.6.x"
+                     , "browserify": "2.29.x"
+                     }
+, "scripts":         { "prepublish": "./node_modules/.bin/coffee -o lib/ -c src/*.coffee && ./node_modules/.bin/browserify -o public/lightbot.js -e lib/index.js -s Lightbot" }
 , "repository" :     { "type" : "git"
                      , "url" : "http://github.com/dbushong/lightbot.git"
                      }
