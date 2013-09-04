@@ -2,8 +2,9 @@ Square = require './square'
 Bot    = require './bot'
 Instr  = require './instruction'
 Prog   = require './program'
+{EventEmitter} = require 'events'
 
-module.exports = class LightbotGame
+module.exports = class LightbotGame extends EventEmitter
   constructor: (@board, @bot, @prog) ->
     @ended  = false
     @looped = false
@@ -39,16 +40,24 @@ module.exports = class LightbotGame
   over: -> @won() or @lost()
 
   tick: ->
+    return null if @over()
+
     instr = @prog.next()
     unless instr?
       @ended = true
+      @emit 'gameOver', 'ended'
       return null
 
     @execute instr
 
     state = @state()
-    @looped = true if @seen[state]
+    if @seen[state]
+      @looped = true
+      @emit 'gameOver', 'looped'
     @seen[state] = true
+
+    @emit 'gameOver', 'won' if @won()
+
     instr
 
   state: ->
@@ -95,29 +104,38 @@ module.exports = class LightbotGame
           if next
             if instr.action is 'forward'
               @bot.moveTo x, y if next.elev is square.elev
+              @emit 'moveBot', x, y
             else # if instr.action is 'jump'
               diff = next.elev - square.elev
               # can jump up 1 or down any
-              @bot.moveTo x, y if diff is 1 or diff < 0
+              if diff is 1 or diff < 0
+                @bot.moveTo x, y
+                @emit 'moveBot', x, y
         when 'bulb'
           square = @board[@bot.y][@bot.x]
           if square.goal
             square.tagged = not square.tagged
+            @emit 'toggleGoal', @bot.x, @bot.y, square.tagged
           else if square.color
             @bot.color =
               if @bot.color is square.color then null else square.color
+            @emit 'botChangeColor', @bot.color
           else if square.lift
             square.elev = switch square.elev
               when 0 then 2
               when 2 then 4
               when 4 then 0
               else throw "invalid lift elevation: #{square.elev}"
+            @emit 'liftMove', @bot.x, @bot.y, square.elev
           else if square.warp
             @bot.moveTo square.warp...
+            @emit 'moveBot', square.warp...
         when 'right'
           @bot.turnRight()
+          @emit 'turnBot', @bot.dir
         when 'left'
           @bot.turnLeft()
+          @emit 'turnBot', @bot.dir
         when 'return'
           @prog.returnFromProc()
 
