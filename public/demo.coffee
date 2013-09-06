@@ -129,6 +129,7 @@ animate = (obj, ms, to) ->
   new TWEEN.Tween(obj)
        .to(to, ms)
        .easing(TWEEN.Easing.Quadratic.InOut)
+       .interpolation(TWEEN.Interpolation.Bezier)
        .onUpdate(updateScene)
        .onComplete(-> animating--)
        .start()

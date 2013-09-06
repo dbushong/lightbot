@@ -227,7 +227,7 @@
 
   animate = function(obj, ms, to) {
     animating++;
-    new TWEEN.Tween(obj).to(to, ms).easing(TWEEN.Easing.Quadratic.InOut).onUpdate(updateScene).onComplete(function() {
+    new TWEEN.Tween(obj).to(to, ms).easing(TWEEN.Easing.Quadratic.InOut).interpolation(TWEEN.Interpolation.Bezier).onUpdate(updateScene).onComplete(function() {
       return animating--;
     }).start();
     if (animating === 1) {
