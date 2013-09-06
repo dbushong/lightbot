@@ -155,13 +155,13 @@
 
   tri = new THREE.Shape;
 
-  tri.moveTo(-50, -100);
+  tri.moveTo(-50, -90);
 
-  tri.lineTo(0, 100);
+  tri.lineTo(0, 90);
 
-  tri.lineTo(50, -100);
+  tri.lineTo(50, -90);
 
-  tri.lineTo(-50, -100);
+  tri.lineTo(-50, -90);
 
   arrow = new THREE.Mesh(tri.extrude({
     amount: 20
@@ -236,13 +236,18 @@
   };
 
   moveBotTo = function(x, y) {
-    var elev;
-    elev = game.board[y][x].elev;
-    return animate(bot.position, 1000, {
+    var coords, elev, from_z, to_z;
+    coords = {
       x: x * 200,
-      y: y * -200,
-      z: body_height / 2 + 1 + elev * 100
-    });
+      y: y * -200
+    };
+    elev = game.board[y][x].elev;
+    to_z = body_height / 2 + 1 + elev * 100;
+    from_z = bot.position.z;
+    if (to_z !== from_z) {
+      coords.z = [Math.max(to_z, from_z) + 100, to_z];
+    }
+    return animate(bot.position, 1000, coords);
   };
 
   turnBotTo = function(dir) {

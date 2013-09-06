@@ -77,10 +77,10 @@ body  = new THREE.Mesh bodyg, gray
 body.name = 'body'
 bot.add body
 tri = new THREE.Shape
-tri.moveTo -50, -100
-tri.lineTo 0, 100
-tri.lineTo 50, -100
-tri.lineTo -50, -100
+tri.moveTo -50, -90
+tri.lineTo 0, 90
+tri.lineTo 50, -90
+tri.lineTo -50, -90
 arrow = new THREE.Mesh tri.extrude(amount: 20), flat_blue
 arrow.name = 'arrow'
 arrow.rotation.x = Math.PI/2
@@ -135,9 +135,15 @@ animate = (obj, ms, to) ->
   animateTick() if animating is 1
 
 moveBotTo = (x, y) ->
-  elev = game.board[y][x].elev
-  animate bot.position, 1000,
-    x: x * 200, y: y * -200, z: body_height / 2 + 1 + elev * 100
+  coords = x: x * 200, y: y * -200
+  elev   = game.board[y][x].elev
+  to_z   = body_height / 2 + 1 + elev * 100
+  from_z = bot.position.z
+
+  if to_z isnt from_z # if jumping
+    coords.z = [ Math.max(to_z, from_z) + 100, to_z ]
+
+  animate bot.position, 1000, coords
 
 turnBotTo = (dir) ->
   #cur_dir = Math.round(bot.rotation.y / Math.PI * 2)
