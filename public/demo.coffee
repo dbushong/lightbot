@@ -95,6 +95,7 @@ document.body.appendChild( renderer.domElement )
 camera = new THREE.PerspectiveCamera 75,
   window.innerWidth / window.innerHeight, 1, 5000
 
+camera.position.x = 300
 camera.position.z = 1500
 
 scene = new THREE.Scene
@@ -103,7 +104,7 @@ updateScene = -> renderer.render scene, camera
 
 # light for phong shading
 light = new THREE.PointLight 0xffffff, 1.0, 0
-light.position.set 300, -100, 700
+light.position.set 300, -100, 900
 scene.add light
 
 # global group
@@ -117,6 +118,13 @@ gray = new THREE.MeshLambertMaterial color: rgb('gray')
 flat_blue = new THREE.MeshLambertMaterial color: 0x0000ff, shading: THREE.FlatShading
 wireframe = new THREE.MeshBasicMaterial
   wireframe: true, wireframeLinewidth: 2, color: 0x666666
+
+# "floor"
+mask = new THREE.Mesh(
+  new THREE.PlaneGeometry(10000, 10000)
+  new THREE.MeshBasicMaterial(color: 0)
+)
+group.add mask
 
 # bot model
 bot = new THREE.Object3D
