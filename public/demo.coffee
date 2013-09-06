@@ -1,0 +1,213 @@
+level_1_1 =
+  { "board":
+    [ [ {}, {}, {} ]
+    , [ {}, {}, { "goal": true } ]
+    , [ {}, {}, {} ]
+    ]
+  , "bot": { "x": 0, "y": 1, "dir": 1 }
+  , "prog": { "main": [ { "action": "forward" }
+                      , { "action": "forward" }
+                      , { "action": "bulb" }
+                      ]
+            }
+  }
+
+level_1_3 = { "board":
+  [ [ {}, {}, { "goal": true } ]
+  , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
+  , [ {}, {}, {} ]
+  ]
+, "bot": { "x": 0, "y": 2, "dir": 1 }
+, "prog": { "main": [ { "action": "forward" }
+                    , { "action": "forward" }
+                    , { "action": "left" }
+                    , { "action": "jump" }
+                    , { "action": "jump" }
+                    , { "action": "bulb" }
+                    ]
+          }
+}
+
+rgb = (clr) ->
+  { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00 }[clr]
+
+renderer = new THREE.WebGLRenderer antialias: true
+#renderer = new THREE.CanvasRenderer antialias: true
+renderer.setSize( window.innerWidth, window.innerHeight )
+document.body.appendChild( renderer.domElement )
+
+camera = new THREE.PerspectiveCamera 75,
+  window.innerWidth / window.innerHeight, 1, 5000
+
+camera.position.z = 1500
+
+scene = new THREE.Scene
+
+updateScene = -> renderer.render scene, camera
+
+# light for phong shading
+light = new THREE.PointLight 0xffffff, 1.0, 0
+light.position.set 300, -100, 500
+scene.add light
+
+# global group
+window.group = group = new THREE.Object3D
+group.name = 'group'
+
+# basic styles
+flat_gray = new THREE.MeshLambertMaterial color: 0xcccccc, shading: THREE.FlatShading
+gray = new THREE.MeshLambertMaterial color: 0xcccccc
+flat_blue = new THREE.MeshLambertMaterial color: 0x0000ff, shading: THREE.FlatShading
+wireframe = new THREE.MeshBasicMaterial
+  wireframe: true, wireframeLinewidth: 2, color: 0x666666
+
+# bot model
+bot = new THREE.Object3D
+bot.name = 'bot'
+head_radius = 40
+body_radius = 40
+body_height = 150
+headg = new THREE.SphereGeometry head_radius, 40
+head  = new THREE.Mesh headg, gray
+head.name = 'head'
+head.position.y = body_height/2 + head_radius
+bot.add head
+bodyg = new THREE.CylinderGeometry body_radius, body_radius, body_height, 20
+body  = new THREE.Mesh bodyg, gray
+body.name = 'body'
+bot.add body
+tri = new THREE.Shape
+tri.moveTo -50, -100
+tri.lineTo 0, 100
+tri.lineTo 50, -100
+tri.lineTo -50, -100
+arrow = new THREE.Mesh tri.extrude(amount: 20), flat_blue
+arrow.name = 'arrow'
+arrow.rotation.x = Math.PI/2
+arrow.rotation.z = Math.PI
+bot.add arrow
+bot.rotation.x = Math.PI/2
+group.add bot
+
+# create one step of a level
+tops = []
+step = (x, y, height=2, color=null) ->
+  grp = new THREE.Object3D
+  grp.name = 'step'
+
+  geom = new THREE.CubeGeometry 200, 200, height
+  grp.add(THREE.SceneUtils.createMultiMaterialObject geom,
+    [flat_gray, wireframe])
+
+  if color
+    top   = new THREE.Object3D
+    top.position.z = height/2+1
+
+    geom  = new THREE.PlaneGeometry 200, 200
+    mat   = new THREE.MeshBasicMaterial color: rgb(color)
+    plane = new THREE.Mesh geom, mat
+    tops[y] ?= []
+    tops[y][x] = plane
+    top.add plane
+
+    grp.add top
+
+  grp.position.x = x * 200
+  grp.position.y = -y * 200
+  grp
+
+game = Lightbot.Game.load level_1_3
+
+animating = 0
+animateTick = ->
+  return unless animating
+  requestAnimationFrame animateTick
+  TWEEN.update()
+
+animate = (obj, ms, to) ->
+  animating++
+  new TWEEN.Tween(obj)
+       .to(to, ms)
+       .easing(TWEEN.Easing.Quadratic.InOut)
+       .onUpdate(updateScene)
+       .onComplete(-> animating--)
+       .start()
+  animateTick() if animating is 1
+
+moveBotTo = (x, y) ->
+  elev = game.board[y][x].elev
+  animate bot.position, 1000,
+    x: x * 200, y: y * -200, z: body_height / 2 + 1 + elev * 100
+
+turnBotTo = (dir) ->
+  #cur_dir = Math.round(bot.rotation.y / Math.PI * 2)
+  #0 -> 1  -pi/2
+  #1 -> 2  
+  animate bot.rotation, 1000, y: (4-dir) * Math.PI / 2
+
+toggleGoal = (x, y, tagged) ->
+  tops[y][x].material.color.setHex rgb(if tagged then 'yellow' else 'teal')
+  updateScene()
+
+# stack steps
+for row, y in game.board
+  for square, x in row
+    clr = if square.goal then 'teal' else square.color
+    if square.lift
+      throw 'lifts not supported' # TODO
+    else
+      if square.elev is 0
+        stp = step x, y, null, clr
+        stp.position.z = 1
+        group.add stp
+      else
+        for i in [0...square.elev]
+          stp = step x, y, 100, (if i is square.elev then clr else null)
+          stp.position.z = 50 + 100 * i
+          group.add stp
+
+# nice angle to view
+group.rotation.x = Number(localStorage.getItem('x_rot') ? -7.6)
+group.rotation.y = Number(localStorage.getItem('y_rot') ? 0)
+
+scene.add group
+
+# initial bot position
+moveBotTo game.bot.x, game.bot.y
+turnBotTo game.bot.dir
+
+# set up draggable stuff
+drag_start = null
+start_rot  = [group.rotation.x, group.rotation.y]
+document.body.addEventListener 'mousedown', (e) ->
+  drag_start = [ e.clientX, e.clientY ] if e.button is 0
+
+document.body.addEventListener 'mouseup', ->
+  drag_start = null
+  start_rot  = [ group.rotation.x, group.rotation.y ]
+  localStorage.setItem 'x_rot', group.rotation.x
+  localStorage.setItem 'y_rot', group.rotation.y
+
+coords = document.getElementById('coords').firstChild
+document.body.addEventListener 'mousemove', (e) ->
+  return unless drag_start
+
+  dx = e.clientX - drag_start[0]
+  dy = e.clientY - drag_start[1]
+  group.rotation.x = start_rot[0] + dy / 100
+  group.rotation.y = start_rot[1] + dx / 100
+  updateScene()
+
+document.getElementById('reset').addEventListener 'click', (e) ->
+  group.rotation.x = group.rotation.y = 0
+  localStorage.removeItem 'x_rot'
+  localStorage.removeItem 'y_rot'
+  updateScene()
+  false
+
+# setup game event handlers
+game.on 'moveBot',    moveBotTo
+game.on 'turnBot',    turnBotTo
+game.on 'toggleGoal', toggleGoal
+game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
+setInterval (-> game.tick()), 2000
