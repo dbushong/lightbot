@@ -1,17 +1,3 @@
-level_1_1 =
-  { "board":
-    [ [ {}, {}, {} ]
-    , [ {}, {}, { "goal": true } ]
-    , [ {}, {}, {} ]
-    ]
-  , "bot": { "x": 0, "y": 1, "dir": 1 }
-  , "prog": { "main": [ { "action": "forward" }
-                      , { "action": "forward" }
-                      , { "action": "bulb" }
-                      ]
-            }
-  }
-
 level_1_3 = { "board":
   [ [ {}, {}, { "goal": true } ]
   , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
@@ -50,8 +36,56 @@ level_2_2 = { "board":
           }
 }
 
+
+level_3_2 = { "board":
+  [ [ {}
+    , { "elev": 4, "goal": true }
+    , {}
+    , { "elev": 4, "goal": true }
+    , {}
+    , { "elev": 4, "goal": true }
+    , {}
+    ]
+  , [ { "elev": 2 }
+    , { "elev": 4 }
+    , { "elev": 2, "goal": true }
+    , { "elev": 4 }
+    , { "elev": 2, "goal": true }
+    , { "elev": 4 }
+    , { "elev": 2, "goal": true }
+    ]
+  , [ {}, { "lift": true }, {}, { "lift": true }, {}, { "lift": true }, {} ]
+  ]
+, "bot": { "x": 0, "y": 2, "dir": 1 }
+, "prog": { "main": [ { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    ]
+          , "p1": [ { "action": "forward" }
+                  , { "action": "left" }
+                  , { "action": "bulb" }
+                  , { "action": "bulb" }
+                  , { "action": "forward" }
+                  , { "action": "forward" }
+                  , { "action": "bulb" }
+                  , { "action": "p2" }
+                  ]
+          , "p2": [ { "action": "right" }
+                  , { "action": "right" }
+                  , { "action": "forward" }
+                  , { "action": "left" }
+                  , { "action": "jump" }
+                  , { "action": "bulb" }
+                  , { "action": "right" }
+                  , { "action": "jump" }
+                  ]
+          }
+}
+
 rgb = (clr) ->
-  { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc }[clr]
+  { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
 
 renderer = new THREE.WebGLRenderer antialias: true
 #renderer = new THREE.CanvasRenderer antialias: true
@@ -69,7 +103,7 @@ updateScene = -> renderer.render scene, camera
 
 # light for phong shading
 light = new THREE.PointLight 0xffffff, 1.0, 0
-light.position.set 300, -100, 500
+light.position.set 300, -100, 700
 scene.add light
 
 # global group
@@ -78,6 +112,7 @@ group.name = 'group'
 
 # basic styles
 flat_gray = new THREE.MeshLambertMaterial color: rgb('gray'), shading: THREE.FlatShading
+beige = new THREE.MeshLambertMaterial color: rgb('beige'), shading: THREE.FlatShading
 gray = new THREE.MeshLambertMaterial color: rgb('gray')
 flat_blue = new THREE.MeshLambertMaterial color: 0x0000ff, shading: THREE.FlatShading
 wireframe = new THREE.MeshBasicMaterial
@@ -113,13 +148,21 @@ group.add bot
 
 # create one step of a level
 tops = []
-step = (x, y, height=2, color=null) ->
+step = (x, y, height=2, color=null, lift=false) ->
   grp = new THREE.Object3D
   grp.name = 'step'
 
   geom = new THREE.CubeGeometry 200, 200, height
   grp.add(THREE.SceneUtils.createMultiMaterialObject geom,
-    [flat_gray, wireframe])
+    [(if lift then beige else flat_gray), wireframe])
+
+  if lift
+    pole = new THREE.Mesh new THREE.CylinderGeometry(5, 5, 400, 10), beige
+    pole.rotation.x = Math.PI/2
+    pole.position.z = -201
+    grp.add pole
+    tops[y] ?= []
+    tops[y][x] = grp
 
   if color
     top   = new THREE.Object3D
@@ -138,7 +181,7 @@ step = (x, y, height=2, color=null) ->
   grp.position.y = -y * 200
   grp
 
-game = Lightbot.Game.load level_2_2
+game = Lightbot.Game.load level_3_2
 
 animating = 0
 animateTick = ->
@@ -157,14 +200,14 @@ animate = (obj, ms, to) ->
        .start()
   animateTick() if animating is 1
 
-moveBotTo = (x, y) ->
+moveBotTo = (x, y, jump=true) ->
   coords = x: x * 200, y: y * -200
   elev   = game.board[y][x].elev
   to_z   = body_height / 2 + 1 + elev * 100
   from_z = bot.position.z
 
   if to_z isnt from_z # if jumping
-    coords.z = [ Math.max(to_z, from_z) + 100, to_z ]
+    coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
 
   animate bot.position, 1000, coords
 
@@ -174,6 +217,11 @@ turnBotTo = (dir) ->
   #0 -> 1  -pi/2
   #1 -> 2  
   animate bot.rotation, 1000, y: (4-dir) * Math.PI / 2
+
+moveLiftTo = (x, y, elev) ->
+  lift = tops[y][x]
+  animate lift.position, 1000, z: 1 + 100 * elev
+  moveBotTo x, y, false
 
 bulbBot = ->
   hcolor = head.material.color
@@ -190,7 +238,9 @@ for row, y in game.board
   for square, x in row
     clr = if square.goal then 'teal' else square.color
     if square.lift
-      throw 'lifts not supported' # TODO
+      stp = step x, y, null, clr, true
+      stp.position.z = 1 + 100 * square.elev
+      group.add stp
     else
       if square.elev is 0
         stp = step x, y, null, clr
@@ -245,6 +295,7 @@ document.getElementById('reset').addEventListener 'click', (e) ->
 game.on 'bulbBot',    bulbBot
 game.on 'moveBot',    moveBotTo
 game.on 'turnBot',    turnBotTo
+game.on 'liftMove',   moveLiftTo
 game.on 'toggleGoal', toggleGoal
 game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
-setInterval (-> game.tick()), 2000
+setInterval (-> game.tick()), 1500
