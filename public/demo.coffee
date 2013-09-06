@@ -28,6 +28,28 @@ level_1_3 = { "board":
           }
 }
 
+
+level_2_2 = { "board":
+  [ [ { "elev": 2 }, {}, { "elev": 2 }, { "elev": 2 }, { "elev": 2 } ]
+  , [ { "elev": 2 }, {}, { "elev": 2 }, {},            { "elev": 2 } ]
+  , [ { "elev": 2 }, { "elev": 2 }, {"elev": 2}, {}, {"elev": 2, "goal": true} ]
+  ]
+, "bot": { "x": 0, "y": 0, "dir": 2 }
+, "prog": { "main": [ { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    , { "action": "left" }
+                    , { "action": "p1" }
+                    , { "action": "right" }
+                    , { "action": "p1" }
+                    , { "action": "right" }
+                    , { "action": "p1" }
+                    , { "action": "bulb" }
+                    ]
+          , "p1": [ { "action": "forward" }, { "action": "forward" } ]
+          }
+}
+
 rgb = (clr) ->
   { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc }[clr]
 
@@ -116,7 +138,7 @@ step = (x, y, height=2, color=null) ->
   grp.position.y = -y * 200
   grp
 
-game = Lightbot.Game.load level_1_3
+game = Lightbot.Game.load level_2_2
 
 animating = 0
 animateTick = ->
@@ -176,7 +198,7 @@ for row, y in game.board
         group.add stp
       else
         for i in [0...square.elev]
-          stp = step x, y, 100, (if i is square.elev then clr else null)
+          stp = step x, y, 100, (if i is (square.elev-1) then clr else null)
           stp.position.z = 50 + 100 * i
           group.add stp
 
