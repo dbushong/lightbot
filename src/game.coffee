@@ -112,6 +112,7 @@ module.exports = class LightbotGame extends EventEmitter
                 @bot.moveTo x, y
                 @emit 'moveBot', x, y
         when 'bulb'
+          @emit 'bulbBot'
           square = @board[@bot.y][@bot.x]
           if square.goal
             square.tagged = not square.tagged

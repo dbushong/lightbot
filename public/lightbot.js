@@ -235,6 +235,7 @@ return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requi
             }
             break;
           case 'bulb':
+            this.emit('bulbBot');
             square = this.board[this.bot.y][this.bot.x];
             if (square.goal) {
               square.tagged = !square.tagged;

@@ -29,7 +29,7 @@ level_1_3 = { "board":
 }
 
 rgb = (clr) ->
-  { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00 }[clr]
+  { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc }[clr]
 
 renderer = new THREE.WebGLRenderer antialias: true
 #renderer = new THREE.CanvasRenderer antialias: true
@@ -55,8 +55,8 @@ window.group = group = new THREE.Object3D
 group.name = 'group'
 
 # basic styles
-flat_gray = new THREE.MeshLambertMaterial color: 0xcccccc, shading: THREE.FlatShading
-gray = new THREE.MeshLambertMaterial color: 0xcccccc
+flat_gray = new THREE.MeshLambertMaterial color: rgb('gray'), shading: THREE.FlatShading
+gray = new THREE.MeshLambertMaterial color: rgb('gray')
 flat_blue = new THREE.MeshLambertMaterial color: 0x0000ff, shading: THREE.FlatShading
 wireframe = new THREE.MeshBasicMaterial
   wireframe: true, wireframeLinewidth: 2, color: 0x666666
@@ -68,7 +68,7 @@ head_radius = 40
 body_radius = 40
 body_height = 150
 headg = new THREE.SphereGeometry head_radius, 40
-head  = new THREE.Mesh headg, gray
+head  = new THREE.Mesh headg, new THREE.MeshLambertMaterial(color: rgb('gray'))
 head.name = 'head'
 head.position.y = body_height/2 + head_radius
 bot.add head
@@ -147,10 +147,17 @@ moveBotTo = (x, y) ->
   animate bot.position, 1000, coords
 
 turnBotTo = (dir) ->
+  # TODO: don't do stupid turns
   #cur_dir = Math.round(bot.rotation.y / Math.PI * 2)
   #0 -> 1  -pi/2
   #1 -> 2  
   animate bot.rotation, 1000, y: (4-dir) * Math.PI / 2
+
+bulbBot = ->
+  hcolor = head.material.color
+  hcolor.setHex rgb('yellow')
+  updateScene()
+  setTimeout (-> hcolor.setHex rgb('gray') ; updateScene()), 500
 
 toggleGoal = (x, y, tagged) ->
   tops[y][x].material.color.setHex rgb(if tagged then 'yellow' else 'teal')
@@ -213,6 +220,7 @@ document.getElementById('reset').addEventListener 'click', (e) ->
   false
 
 # setup game event handlers
+game.on 'bulbBot',    bulbBot
 game.on 'moveBot',    moveBotTo
 game.on 'turnBot',    turnBotTo
 game.on 'toggleGoal', toggleGoal
