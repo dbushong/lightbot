@@ -93,7 +93,7 @@ renderer.setSize( window.innerWidth, window.innerHeight )
 document.body.appendChild( renderer.domElement )
 
 camera = new THREE.PerspectiveCamera 75,
-  window.innerWidth / window.innerHeight, 1, 5000
+  window.innerWidth / window.innerHeight, 1, 20000
 
 camera.position.x = 300
 camera.position.z = 1500
@@ -120,11 +120,12 @@ wireframe = new THREE.MeshBasicMaterial
   wireframe: true, wireframeLinewidth: 2, color: 0x666666
 
 # "floor"
-mask = new THREE.Mesh(
-  new THREE.PlaneGeometry(10000, 10000)
-  new THREE.MeshBasicMaterial(color: 0)
+sky = new THREE.Mesh(
+  new THREE.CubeGeometry 10000, 10000, 10000
+  new THREE.MeshBasicMaterial color: 0, side: THREE.BackSide
 )
-group.add mask
+sky.position.z = 5000
+group.add sky
 
 # bot model
 bot = new THREE.Object3D
