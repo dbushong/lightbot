@@ -96,11 +96,10 @@ camera = new THREE.PerspectiveCamera 75,
   window.innerWidth / window.innerHeight, 1, 20000
 
 camera.position.x = 300
-camera.position.z = 1500
 
 scene = new THREE.Scene
 
-updateScene = -> renderer.render scene, camera
+window.updateScene = updateScene = -> renderer.render scene, camera
 
 # light for phong shading
 light = new THREE.PointLight 0xffffff, 1.0, 0
@@ -262,8 +261,12 @@ for row, y in game.board
           group.add stp
 
 # nice angle to view
-group.rotation.x = Number(localStorage.getItem('x_rot') ? -7.6)
-group.rotation.y = Number(localStorage.getItem('y_rot') ? 0)
+def_cam_zpos = 1500
+def_x_rot    = -7.6
+
+group.rotation.x  = Number(localStorage.getItem('x_rot') ? def_x_rot)
+group.rotation.z  = Number(localStorage.getItem('z_rot') ? 0)
+camera.position.z = Number(localStorage.getItem('cam_zpos') ? def_cam_zpos)
 
 scene.add group
 
@@ -272,33 +275,46 @@ moveBotTo game.bot.x, game.bot.y
 turnBotTo game.bot.dir
 
 # set up draggable stuff
-drag_start = null
-start_rot  = [group.rotation.x, group.rotation.y]
+prev_coords = [ null, null ]
 document.body.addEventListener 'mousedown', (e) ->
-  drag_start = [ e.clientX, e.clientY ] if e.button is 0
+  prev_coords[e.button] = [ e.clientX, e.clientY ]
 
-document.body.addEventListener 'mouseup', ->
-  drag_start = null
-  start_rot  = [ group.rotation.x, group.rotation.y ]
+document.body.addEventListener 'mouseup', (e) ->
+  prev_coords[e.button] = null
   localStorage.setItem 'x_rot', group.rotation.x
-  localStorage.setItem 'y_rot', group.rotation.y
+  localStorage.setItem 'z_rot', group.rotation.z
 
-coords = document.getElementById('coords').firstChild
 document.body.addEventListener 'mousemove', (e) ->
-  return unless drag_start
-
-  dx = e.clientX - drag_start[0]
-  dy = e.clientY - drag_start[1]
-  group.rotation.x = start_rot[0] + dy / 100
-  group.rotation.y = start_rot[1] + dx / 100
-  updateScene()
+  for prev, but in prev_coords
+    continue unless prev
+    dx = e.clientX - prev[0]
+    dy = e.clientY - prev[1]
+    if but is 0
+      group.rotation.x += dy / 100
+      group.rotation.z += dx / 100
+    else if but is 1
+      console.log 'but', but
+      camera.position.x -= dx * 5
+      camera.position.y += dy * 5
+    prev_coords[but] = [ e.clientX, e.clientY ]
+    updateScene()
 
 document.getElementById('reset').addEventListener 'click', (e) ->
-  group.rotation.x = group.rotation.y = 0
-  localStorage.removeItem 'x_rot'
-  localStorage.removeItem 'y_rot'
+  group.rotation.z  = 0
+  group.rotation.x  = def_x_rot
+  camera.position.z = def_cam_zpos
+  localStorage.removeItem s for s in ['x_rot', 'y_rot', 'cam_zpos']
   updateScene()
   false
+
+window.addEventListener 'mousewheel', (e) ->
+  if e.wheelDelta < 0
+    camera.position.z += 100
+  else
+    camera.position.z -= 100
+  localStorage.setItem 'cam_zpos', camera.position.z
+  updateScene()
+  e.preventDefault()
 
 # setup game event handlers
 game.on 'bulbBot',    bulbBot
