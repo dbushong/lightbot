@@ -556,11 +556,7 @@
   });
 
   window.addEventListener('mousewheel', function(e) {
-    if (e.wheelDelta < 0) {
-      camera.position.z += 100;
-    } else {
-      camera.position.z -= 100;
-    }
+    camera.position.z -= e.wheelDelta;
     localStorage.setItem('cam_zpos', camera.position.z);
     updateScene();
     return e.preventDefault();
