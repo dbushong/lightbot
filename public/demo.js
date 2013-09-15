@@ -508,11 +508,14 @@
   prev_coords = [null, null];
 
   document.body.addEventListener('mousedown', function(e) {
-    return prev_coords[e.button] = [e.clientX, e.clientY];
+    prev_coords[e.button] = [e.clientX, e.clientY];
+    renderer.domElement.style.cursor = 'move';
+    return e.preventDefault();
   });
 
   document.body.addEventListener('mouseup', function(e) {
     prev_coords[e.button] = null;
+    renderer.domElement.style.cursor = 'default';
     localStorage.setItem('x_rot', group.rotation.x);
     return localStorage.setItem('z_rot', group.rotation.z);
   });

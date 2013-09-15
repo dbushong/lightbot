@@ -94,6 +94,9 @@ document.body.appendChild( renderer.domElement )
 
 camera = new THREE.PerspectiveCamera 75,
   window.innerWidth / window.innerHeight, 1, 20000
+#camera = new THREE.OrthographicCamera -1000,
+#  20000, 100000, -1000, -1000,
+#  100000
 
 camera.position.x = 300
 
@@ -278,9 +281,12 @@ turnBotTo game.bot.dir
 prev_coords = [ null, null ]
 document.body.addEventListener 'mousedown', (e) ->
   prev_coords[e.button] = [ e.clientX, e.clientY ]
+  renderer.domElement.style.cursor = 'move'
+  e.preventDefault()
 
 document.body.addEventListener 'mouseup', (e) ->
   prev_coords[e.button] = null
+  renderer.domElement.style.cursor = 'default'
   localStorage.setItem 'x_rot', group.rotation.x
   localStorage.setItem 'z_rot', group.rotation.z
 
