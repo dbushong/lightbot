@@ -98,8 +98,6 @@ camera = new THREE.PerspectiveCamera 75,
 #  20000, 100000, -1000, -1000,
 #  100000
 
-camera.position.x = 300
-
 scene = new THREE.Scene
 
 window.updateScene = updateScene = -> renderer.render scene, camera
@@ -264,11 +262,15 @@ for row, y in game.board
           group.add stp
 
 # nice angle to view
+def_cam_xpos = 300
+def_cam_ypos = 0
 def_cam_zpos = 1500
 def_x_rot    = -7.6
 
 group.rotation.x  = Number(localStorage.getItem('x_rot') ? def_x_rot)
 group.rotation.z  = Number(localStorage.getItem('z_rot') ? 0)
+camera.position.x = Number(localStorage.getItem('cam_xpos') ? def_cam_xpos)
+camera.position.y = Number(localStorage.getItem('cam_ypos') ? def_cam_ypos)
 camera.position.z = Number(localStorage.getItem('cam_zpos') ? def_cam_zpos)
 
 scene.add group
@@ -289,6 +291,8 @@ document.body.addEventListener 'mouseup', (e) ->
   renderer.domElement.style.cursor = 'default'
   localStorage.setItem 'x_rot', group.rotation.x
   localStorage.setItem 'z_rot', group.rotation.z
+  localStorage.setItem 'cam_xpos', camera.position.x
+  localStorage.setItem 'cam_ypos', camera.position.y
 
 document.body.addEventListener 'mousemove', (e) ->
   for prev, but in prev_coords
