@@ -4,7 +4,7 @@ lightbot
 Summary
 -------
 
-An unauthorized simulator for [Light-bot](https://play.google.com/store/apps/details?id=com.lightbot.lightbot).
+An unauthorized simulator for [Light-bot](https://play.google.com/store/apps/details?id=com.lightbot.lightbot).  [Demo](http://dbushong.github.io/lightbot)
 
 Usage
 -----
