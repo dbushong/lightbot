@@ -84,6 +84,62 @@ level_3_2 = { "board":
           }
 }
 
+level_6_7 = { "board":
+  [ [ { "elev": 1 }
+    , { "elev": 1 }
+    , { "elev": 1, "color": "green" }
+    , {}
+    , { "color": "green" }
+    , { "elev": 1 }
+    , { "elev": 1, "color": "red" }
+    ]
+  , [ {}, {}, {}, {}, {}, {}, { "elev": 1, "color": "green" } ]
+  , [ { "elev": 2, "color": "red" }
+    , { "elev": 2 }
+    , { "elev": 2 }
+    , { "elev": 2, "color": "red" }
+    , {}
+    , { "elev": 2, "goal": true }
+    , {}
+    ]
+  , [ { "elev": 2 }
+    , {}
+    , {}
+    , { "elev": 2, "color": "green" }
+    , {}
+    , { "elev": 2 }
+    , {}
+    ]
+  , [ { "elev": 2, "color": "red" }
+    , { "elev": 1, "color": "green" }
+    , { "elev": 1, "color": "red" }
+    , { "color": "red", "elev": 3 }
+    , { "color": "green", "elev": 3 }
+    , { "color": "red", "elev": 2 }
+    , { "color": "green" }
+    ]
+  , [ {}, {}, { "color": "green" }, {}, {}, {}, { "elev": 1 } ]
+  , [ {}
+    , {}
+    , { "color": "red" }
+    , { "elev": 1, "color": "green" }
+    , { "elev": 1 }
+    , { "elev": 1 }
+    , { "elev": 1, "color": "red" }
+    ]
+  ]
+, "bot": { "x": 0, "y": 0, "dir": 1 }
+, "prog": { "main": [ { "action": "p1" } ]
+          , "p1": [ { "action": "bulb" }
+                  , { "action": "right", "color": "red" }
+                  , { "action": "bulb", "color": "red" }
+                  , { "action": "forward" }
+                  , { "action": "jump", "color": "green" }
+                  , { "action": "p1" }
+                  ]
+          }
+}
+
 rgb = (clr) ->
   { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
 
@@ -92,8 +148,6 @@ renderer = new THREE.WebGLRenderer antialias: true
 renderer.setSize( window.innerWidth, window.innerHeight )
 document.body.appendChild( renderer.domElement )
 
-#camera = new THREE.PerspectiveCamera 75,
-#  window.innerWidth / window.innerHeight, 1, 20000
 window.camera = camera = new THREE.OrthographicCamera -1e7,
   1e7, 1e7, -1e7, -1e7, 1e7
 
@@ -189,7 +243,7 @@ step = (x, y, height=2, color=null, lift=false) ->
   grp.position.y = -y * 200
   grp
 
-game = Lightbot.Game.load level_3_2
+game = Lightbot.Game.load level_6_7
 
 animating = 0
 animateTick = ->
@@ -236,6 +290,11 @@ bulbBot = ->
   hcolor.setHex rgb('yellow')
   updateScene()
   setTimeout (-> hcolor.setHex rgb('gray') ; updateScene()), 500
+
+colorBot = (color) ->
+  bcolor = body.material.color
+  bcolor.setHex rgb(color ? 'gray')
+  updateScene()
 
 toggleGoal = (x, y, tagged) ->
   tops[y][x].material.color.setHex rgb(if tagged then 'yellow' else 'teal')
@@ -320,9 +379,10 @@ window.addEventListener 'mousewheel', (e) ->
 
 # setup game event handlers
 game.on 'bulbBot',    bulbBot
+game.on 'botChangeColor', colorBot
 game.on 'moveBot',    moveBotTo
 game.on 'turnBot',    turnBotTo
 game.on 'liftMove',   moveLiftTo
 game.on 'toggleGoal', toggleGoal
 game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
-setInterval (-> game.tick()), 1500
+setInterval (-> game.tick()), 500
