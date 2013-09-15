@@ -92,24 +92,23 @@ renderer = new THREE.WebGLRenderer antialias: true
 renderer.setSize( window.innerWidth, window.innerHeight )
 document.body.appendChild( renderer.domElement )
 
-camera = new THREE.PerspectiveCamera 75,
-  window.innerWidth / window.innerHeight, 1, 20000
-#camera = new THREE.OrthographicCamera -1000,
-#  20000, 100000, -1000, -1000,
-#  100000
+#camera = new THREE.PerspectiveCamera 75,
+#  window.innerWidth / window.innerHeight, 1, 20000
+window.camera = camera = new THREE.OrthographicCamera -1e7,
+  1e7, 1e7, -1e7, -1e7, 1e7
 
 scene = new THREE.Scene
 
 window.updateScene = updateScene = -> renderer.render scene, camera
 
-# light for phong shading
-light = new THREE.PointLight 0xffffff, 1.0, 0
-light.position.set 300, -100, 900
-scene.add light
-
 # global group
 window.group = group = new THREE.Object3D
 group.name = 'group'
+
+# light for phong shading
+window.light = light = new THREE.PointLight 0xffffff, 1.0, 0
+light.position.set 500, -500, 1000
+group.add light
 
 # basic styles
 flat_gray = new THREE.MeshLambertMaterial color: rgb('gray'), shading: THREE.FlatShading
@@ -125,7 +124,7 @@ sky = new THREE.Mesh(
   new THREE.MeshBasicMaterial color: 0, side: THREE.BackSide
 )
 sky.position.z = 5000
-group.add sky
+#group.add sky
 
 # bot model
 bot = new THREE.Object3D
@@ -261,17 +260,16 @@ for row, y in game.board
           stp.position.z = 50 + 100 * i
           group.add stp
 
-# nice angle to view
-def_cam_xpos = 300
-def_cam_ypos = 0
-def_cam_zpos = 1500
-def_x_rot    = -7.6
+# viewing defaults
+defaults =
+  position: [ -2e6, 2e6, 0 ]
+  rotation: [ -7.25, 0, -0.5 ]
+  scale:    [ 8200, 8200, 8200 ]
 
-group.rotation.x  = Number(localStorage.getItem('x_rot') ? def_x_rot)
-group.rotation.z  = Number(localStorage.getItem('z_rot') ? 0)
-camera.position.x = Number(localStorage.getItem('cam_xpos') ? def_cam_xpos)
-camera.position.y = Number(localStorage.getItem('cam_ypos') ? def_cam_ypos)
-camera.position.z = Number(localStorage.getItem('cam_zpos') ? def_cam_zpos)
+# load defaults or saved preferences
+for prop, def of defaults
+  pref = localStorage.getItem prop
+  group[prop].fromArray(if pref then JSON.parse(pref) else def)
 
 scene.add group
 
@@ -289,10 +287,8 @@ document.body.addEventListener 'mousedown', (e) ->
 document.body.addEventListener 'mouseup', (e) ->
   prev_coords[e.button] = null
   renderer.domElement.style.cursor = 'default'
-  localStorage.setItem 'x_rot', group.rotation.x
-  localStorage.setItem 'z_rot', group.rotation.z
-  localStorage.setItem 'cam_xpos', camera.position.x
-  localStorage.setItem 'cam_ypos', camera.position.y
+  for attr in ['rotation', 'position', 'scale']
+    localStorage.setItem attr, JSON.stringify(group[attr].toArray())
 
 document.body.addEventListener 'mousemove', (e) ->
   for prev, but in prev_coords
@@ -303,23 +299,22 @@ document.body.addEventListener 'mousemove', (e) ->
       group.rotation.x += dy / 100
       group.rotation.z += dx / 100
     else if but is 1
-      console.log 'but', but
-      camera.position.x -= dx * 5
-      camera.position.y += dy * 5
+      group.position.x += dx * 5000
+      group.position.y -= dy * 10000
     prev_coords[but] = [ e.clientX, e.clientY ]
     updateScene()
 
 document.getElementById('reset').addEventListener 'click', (e) ->
-  group.rotation.z  = 0
-  group.rotation.x  = def_x_rot
-  camera.position.z = def_cam_zpos
-  localStorage.removeItem s for s in ['x_rot', 'y_rot', 'cam_zpos']
+  for prop, def of defaults
+    group[prop].fromArray def
+    localStorage.removeItem prop
   updateScene()
   false
 
 window.addEventListener 'mousewheel', (e) ->
-  camera.position.z -= e.wheelDelta
-  localStorage.setItem 'cam_zpos', camera.position.z
+  factor = e.wheelDelta / 100
+  factor = Math.abs(1/factor) if factor < 0
+  group.scale.multiplyScalar factor
   updateScene()
   e.preventDefault()
 
