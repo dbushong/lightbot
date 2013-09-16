@@ -143,6 +143,12 @@ level_6_7 = { "board":
 rgb = (clr) ->
   { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
 
+rgbObj = (clr) ->
+  hex = rgb clr
+  r: (hex >> 16) / 255
+  g: ((hex & 0xff00) >> 8) / 255
+  b: (hex & 0xff) / 255
+
 speed = 1
 
 canvas   = document.createElement 'canvas'
@@ -188,7 +194,7 @@ sky.position.z = 5000
 #group.add sky
 
 # bot model
-bot = new THREE.Object3D
+window.bot = bot = new THREE.Object3D
 bot.name = 'bot'
 head_radius = 40
 body_radius = 40
@@ -258,28 +264,28 @@ animateTick = ->
   requestAnimationFrame animateTick
   TWEEN.update()
 
+animations = []
 animate = (obj, ms, to) ->
   animating++
-  new TWEEN.Tween(obj)
+  tween = new TWEEN.Tween(obj)
        .to(to, ms)
        .easing(TWEEN.Easing.Quadratic.InOut)
        .interpolation(TWEEN.Interpolation.Bezier)
        .onUpdate(updateScene)
        .onComplete(-> animating--)
-       .start()
-  animateTick() if animating is 1
+  animations.push tween
+  tween
 
 moveBotTo = (x, y, jump=true) ->
-  #console.log 'moveBotTo', x, y
   coords = x: x * 200, y: y * -200
   elev   = game.board[y][x].elev
-  to_z   = body_height / 2 + 1 + elev * 100
-  from_z = bot.position.z
 
-  if to_z isnt from_z # if jumping
-    coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
-
-  animate bot.position, 1000/speed, coords
+  tween = animate bot.position, 1000/speed, coords
+  tween.onStart ->
+    to_z   = body_height / 2 + 1 + elev * 100
+    from_z = bot.position.z
+    if to_z isnt from_z # if jumping
+      coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
 
 turnBotTo = (dir) ->
   #console.log 'turnBotTo', dir
@@ -297,21 +303,17 @@ moveLiftTo = (x, y, elev) ->
 
 bulbBot = ->
   #console.log 'bulbBot'
-  hcolor = head.material.color
-  hcolor.setHex rgb('yellow')
-  updateScene()
-  setTimeout (-> hcolor.setHex rgb('gray') ; updateScene()), 500/speed
+  animate head.material.color, 250/speed, rgbObj('yellow')
+  animate head.material.color, 250/speed, rgbObj('gray')
 
 colorBot = (color) ->
   #console.log 'colorBot'
-  bcolor = body.material.color
-  bcolor.setHex rgb(color ? 'gray')
-  updateScene()
+  animate body.material.color, 0, rgbObj('gray')
 
 toggleGoal = (x, y, tagged) ->
   #console.log 'toggleGoal', x, y, tagged
-  tops[y][x].material.color.setHex rgb(if tagged then 'yellow' else 'teal')
-  updateScene()
+  animate tops[y][x].material.color, 0,
+    rgbObj(if tagged then 'yellow' else 'teal')
 
 # stack steps
 for row, y in game.board
@@ -346,7 +348,7 @@ for prop, def of defaults
 scene.add group
 
 # initial bot position
-moveBotTo game.bot.x, game.bot.y
+moveBotTo game.bot.x, game.bot.y, false
 turnBotTo game.bot.dir
 
 # set up draggable stuff
@@ -391,11 +393,21 @@ window.addEventListener 'mousewheel', (e) ->
   e.preventDefault()
 
 # setup game event handlers
-game.on 'bulbBot',    bulbBot
+game.on 'bulbBot',        bulbBot
 game.on 'botChangeColor', colorBot
-game.on 'moveBot',    moveBotTo
-game.on 'turnBot',    turnBotTo
-game.on 'liftMove',   moveLiftTo
-game.on 'toggleGoal', toggleGoal
-game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
-setInterval (-> game.tick()), 1000/speed
+game.on 'moveBot',        moveBotTo
+game.on 'turnBot',        turnBotTo
+game.on 'liftMove',       moveLiftTo
+game.on 'toggleGoal',     toggleGoal
+#game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
+game.tick() while not game.over()
+
+# start animations
+setTimeout (->
+  cur = first = animations.shift()
+  for tween in animations
+    cur.chain tween
+    cur = tween
+  first.start()
+  animateTick()
+), 0
