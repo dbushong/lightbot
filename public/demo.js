@@ -612,12 +612,14 @@
       y: (4 - dir) * Math.PI / 2
     };
     return animate(bot.rotation, 1000 / speed, to).onStart(function() {
-      var cur_dir;
-      cur_dir = (4 - (Math.round(bot.rotation.y / Math.PI * 2) % 4)) % 4;
-      if ((dir - cur_dir) % 2) {
-        return to.y = (4 - dir) * Math.PI / 2;
-      } else {
-        return to.y = (4 - dir) * Math.PI / 2;
+      var cur, rot, _ref1;
+      cur = (4 - (Math.round(bot.rotation.y / Math.PI * 2) % 4)) % 4;
+      if (Math.abs(dir - cur) % 2) {
+        rot = 1;
+        if ((_ref1 = cur - dir) === (-1) || _ref1 === 3) {
+          rot = -1;
+        }
+        return to.y = bot.rotation.y + rot * Math.PI / 2;
       }
     });
   };

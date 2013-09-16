@@ -302,11 +302,11 @@ turnBotTo = (dir) ->
   #console.log 'turnBotTo', dir
   to = y: (4-dir) * Math.PI / 2
   animate(bot.rotation, 1000/speed, to).onStart ->
-    cur_dir = (4 - (Math.round(bot.rotation.y / Math.PI * 2) % 4)) % 4
-    if (dir - cur_dir) % 2 # if odd, i.e. 1/4 turn
-      to.y = (4-dir) * Math.PI / 2
-    else
-      to.y = (4-dir) * Math.PI / 2
+    cur = (4 - (Math.round(bot.rotation.y / Math.PI * 2) % 4)) % 4
+    if Math.abs(dir - cur) % 2 # if a 90° turn
+      rot =  1
+      rot = -1 if (cur - dir) in [-1, 3]
+      to.y = bot.rotation.y + rot * Math.PI / 2
 
 moveLiftTo = (x, y, elev) ->
   #console.log 'moveLiftTo', x, y, elev
