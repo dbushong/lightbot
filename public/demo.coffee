@@ -113,8 +113,9 @@ step = (x, y, height=2, color=null, lift=false) ->
   grp.position.y = -y * 200
   grp
 
-cur_level = localStorage.getItem('level') ? (k for k of levels)[0]
-game = Lightbot.Game.load levels[cur_level]
+def_level = (k for k of levels)[0]
+cur_level = localStorage.getItem('level') ? def_level
+game = Lightbot.Game.load(levels[cur_level] ? levels[def_level])
 
 animating = 0
 animateTick = ->
@@ -263,6 +264,7 @@ document.getElementById('reset').addEventListener 'click', (e) ->
   for prop, def of defaults
     group[prop].fromArray def
     localStorage.removeItem prop
+  localStorage.removeItem 'level'
   updateScene()
   false
 

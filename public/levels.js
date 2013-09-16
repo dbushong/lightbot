@@ -1,4 +1,4 @@
-levels={"level_1_1":{ "board":
+levels={"level-1-1":{ "board":
   [ [ {}, {}, {} ]
   , [ {}, {}, { "goal": true } ]
   , [ {}, {}, {} ]
@@ -10,7 +10,7 @@ levels={"level_1_1":{ "board":
                     ]
           }
 }
-,"level_1_3":{ "board":
+,"level-1-3":{ "board":
   [ [ {}, {}, { "goal": true } ]
   , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
   , [ {}, {}, {} ]
@@ -25,7 +25,7 @@ levels={"level_1_1":{ "board":
                     ]
           }
 }
-,"level_2_2":{ "board":
+,"level-2-2":{ "board":
   [ [ { "elev": 2 }, {}, { "elev": 2 }, { "elev": 2 }, { "elev": 2 } ]
   , [ { "elev": 2 }, {}, { "elev": 2 }, {},            { "elev": 2 } ]
   , [ { "elev": 2 }, { "elev": 2 }, {"elev": 2}, {}, {"elev": 2, "goal": true} ]
@@ -45,7 +45,7 @@ levels={"level_1_1":{ "board":
           , "p1": [ { "action": "forward" }, { "action": "forward" } ]
           }
 }
-,"level_3_2":{ "board":
+,"level-3-2":{ "board":
   [ [ {}
     , { "elev": 4, "goal": true }
     , {}
@@ -91,7 +91,7 @@ levels={"level_1_1":{ "board":
                   ]
           }
 }
-,"level_3_7":{ "board":
+,"level-3-7":{ "board":
   [ [ {}
     , { "lift": true }
     , { "elev": 4 }
@@ -145,7 +145,7 @@ levels={"level_1_1":{ "board":
                   ]
           }
 }
-,"level_5_5":{ "board":
+,"level-5-5":{ "board":
   [ [ { "elev": 2 }
     , { "elev": 2 }
     , { "elev": 2 }
@@ -174,7 +174,7 @@ levels={"level_1_1":{ "board":
                   ]
           }
 }
-,"level_6_4":{ "board":
+,"level-6-4":{ "board":
   [ [ { "color": "green" }
     , { "goal": true }
     , { "goal": true }
@@ -248,7 +248,7 @@ levels={"level_1_1":{ "board":
                   ]
           }
 }
-,"level_6_7":{ "board":
+,"level-6-7":{ "board":
   [ [ { "elev": 1 }
     , { "elev": 1 }
     , { "elev": 1, "color": "green" }
