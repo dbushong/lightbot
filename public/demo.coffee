@@ -264,7 +264,7 @@ animateTick = ->
   TWEEN.update()
 
 animations = []
-animate = (obj, ms, to) ->
+animate = (obj, ms, to, parallel=false) ->
   animating++
   tween = new TWEEN.Tween(obj)
        .to(to, ms)
@@ -272,7 +272,15 @@ animate = (obj, ms, to) ->
        .interpolation(TWEEN.Interpolation.Bezier)
        .onUpdate(updateScene)
        .onComplete(-> animating--)
-  animations.push tween
+  if parallel
+    last = animations[animations.length-1]
+    if last instanceof Array
+      last.push tween
+    else
+      animations.pop()
+      animations.push [ last, tween ]
+  else
+    animations.push tween
   tween
 
 botX = (x)    -> x * 200
@@ -303,11 +311,8 @@ turnBotTo = (dir) ->
 moveLiftTo = (x, y, elev) ->
   #console.log 'moveLiftTo', x, y, elev
   lift = tops[y][x]
-  lift_tween = animate lift.position, 1000/speed, z: 1 + 100 * elev
-  bot_tween  = moveBotTo x, y, false
-  animations.pop()
-  animations.pop()
-  animations.push [ lift_tween, bot_tween ]
+  moveBotTo x, y, false
+  animate lift.position, 1000/speed, { z: 1 + 100 * elev }, true
 
 bulbBot = ->
   #console.log 'bulbBot'

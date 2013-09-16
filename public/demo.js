@@ -548,13 +548,26 @@
 
   animations = [];
 
-  animate = function(obj, ms, to) {
-    var tween;
+  animate = function(obj, ms, to, parallel) {
+    var last, tween;
+    if (parallel == null) {
+      parallel = false;
+    }
     animating++;
     tween = new TWEEN.Tween(obj).to(to, ms).easing(TWEEN.Easing.Quadratic.InOut).interpolation(TWEEN.Interpolation.Bezier).onUpdate(updateScene).onComplete(function() {
       return animating--;
     });
-    animations.push(tween);
+    if (parallel) {
+      last = animations[animations.length - 1];
+      if (last instanceof Array) {
+        last.push(tween);
+      } else {
+        animations.pop();
+        animations.push([last, tween]);
+      }
+    } else {
+      animations.push(tween);
+    }
     return tween;
   };
 
@@ -610,15 +623,12 @@
   };
 
   moveLiftTo = function(x, y, elev) {
-    var bot_tween, lift, lift_tween;
+    var lift;
     lift = tops[y][x];
-    lift_tween = animate(lift.position, 1000 / speed, {
+    moveBotTo(x, y, false);
+    return animate(lift.position, 1000 / speed, {
       z: 1 + 100 * elev
-    });
-    bot_tween = moveBotTo(x, y, false);
-    animations.pop();
-    animations.pop();
-    return animations.push([lift_tween, bot_tween]);
+    }, true);
   };
 
   bulbBot = function() {
