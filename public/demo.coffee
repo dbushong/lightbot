@@ -1,144 +1,143 @@
-level_1_3 = { "board":
-  [ [ {}, {}, { "goal": true } ]
-  , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
-  , [ {}, {}, {} ]
-  ]
-, "bot": { "x": 0, "y": 2, "dir": 1 }
-, "prog": { "main": [ { "action": "forward" }
+levels =
+  level_1_3: { "board":
+    [ [ {}, {}, { "goal": true } ]
+    , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
+    , [ {}, {}, {} ]
+    ]
+  , "bot": { "x": 0, "y": 2, "dir": 1 }
+  , "prog": { "main": [ { "action": "forward" }
+                      , { "action": "forward" }
+                      , { "action": "left" }
+                      , { "action": "jump" }
+                      , { "action": "jump" }
+                      , { "action": "bulb" }
+                      ]
+            }
+  }
+
+  level_2_2: { "board":
+    [ [ { "elev": 2 }, {}, { "elev": 2 }, { "elev": 2 }, { "elev": 2 } ]
+    , [ { "elev": 2 }, {}, { "elev": 2 }, {},            { "elev": 2 } ]
+    , [ { "elev": 2 }, { "elev": 2 }, {"elev": 2}, {}, {"elev": 2, "goal": true} ]
+    ]
+  , "bot": { "x": 0, "y": 0, "dir": 2 }
+  , "prog": { "main": [ { "action": "p1" }
+                      , { "action": "left" }
+                      , { "action": "p1" }
+                      , { "action": "left" }
+                      , { "action": "p1" }
+                      , { "action": "right" }
+                      , { "action": "p1" }
+                      , { "action": "right" }
+                      , { "action": "p1" }
+                      , { "action": "bulb" }
+                      ]
+            , "p1": [ { "action": "forward" }, { "action": "forward" } ]
+            }
+  }
+
+  level_3_2: { "board":
+    [ [ {}
+      , { "elev": 4, "goal": true }
+      , {}
+      , { "elev": 4, "goal": true }
+      , {}
+      , { "elev": 4, "goal": true }
+      , {}
+      ]
+    , [ { "elev": 2 }
+      , { "elev": 4 }
+      , { "elev": 2, "goal": true }
+      , { "elev": 4 }
+      , { "elev": 2, "goal": true }
+      , { "elev": 4 }
+      , { "elev": 2, "goal": true }
+      ]
+    , [ {}, { "lift": true }, {}, { "lift": true }, {}, { "lift": true }, {} ]
+    ]
+  , "bot": { "x": 0, "y": 2, "dir": 1 }
+  , "prog": { "main": [ { "action": "p1" }
+                      , { "action": "left" }
+                      , { "action": "p1" }
+                      , { "action": "left" }
+                      , { "action": "p1" }
+                      ]
+            , "p1": [ { "action": "forward" }
+                    , { "action": "left" }
+                    , { "action": "bulb" }
+                    , { "action": "bulb" }
+                    , { "action": "forward" }
+                    , { "action": "forward" }
+                    , { "action": "bulb" }
+                    , { "action": "p2" }
+                    ]
+            , "p2": [ { "action": "right" }
+                    , { "action": "right" }
                     , { "action": "forward" }
                     , { "action": "left" }
                     , { "action": "jump" }
+                    , { "action": "bulb" }
+                    , { "action": "right" }
                     , { "action": "jump" }
-                    , { "action": "bulb" }
                     ]
-          }
-}
+            }
+  }
 
-
-level_2_2 = { "board":
-  [ [ { "elev": 2 }, {}, { "elev": 2 }, { "elev": 2 }, { "elev": 2 } ]
-  , [ { "elev": 2 }, {}, { "elev": 2 }, {},            { "elev": 2 } ]
-  , [ { "elev": 2 }, { "elev": 2 }, {"elev": 2}, {}, {"elev": 2, "goal": true} ]
-  ]
-, "bot": { "x": 0, "y": 0, "dir": 2 }
-, "prog": { "main": [ { "action": "p1" }
-                    , { "action": "left" }
+  level_6_7: { "board":
+    [ [ { "elev": 1 }
+      , { "elev": 1 }
+      , { "elev": 1, "color": "green" }
+      , {}
+      , { "color": "green" }
+      , { "elev": 1 }
+      , { "elev": 1, "color": "red" }
+      ]
+    , [ {}, {}, {}, {}, {}, {}, { "elev": 1, "color": "green" } ]
+    , [ { "elev": 2, "color": "red" }
+      , { "elev": 2 }
+      , { "elev": 2 }
+      , { "elev": 2, "color": "red" }
+      , {}
+      , { "elev": 2, "goal": true }
+      , {}
+      ]
+    , [ { "elev": 2 }
+      , {}
+      , {}
+      , { "elev": 2, "color": "green" }
+      , {}
+      , { "elev": 2 }
+      , {}
+      ]
+    , [ { "elev": 2, "color": "red" }
+      , { "elev": 1, "color": "green" }
+      , { "elev": 1, "color": "red" }
+      , { "color": "red", "elev": 3 }
+      , { "color": "green", "elev": 3 }
+      , { "color": "red", "elev": 2 }
+      , { "color": "green" }
+      ]
+    , [ {}, {}, { "color": "green" }, {}, {}, {}, { "elev": 1 } ]
+    , [ {}
+      , {}
+      , { "color": "red" }
+      , { "elev": 1, "color": "green" }
+      , { "elev": 1 }
+      , { "elev": 1 }
+      , { "elev": 1, "color": "red" }
+      ]
+    ]
+  , "bot": { "x": 0, "y": 0, "dir": 1 }
+  , "prog": { "main": [ { "action": "p1" } ]
+            , "p1": [ { "action": "bulb" }
+                    , { "action": "right", "color": "red" }
+                    , { "action": "bulb", "color": "red" }
+                    , { "action": "forward" }
+                    , { "action": "jump", "color": "green" }
                     , { "action": "p1" }
-                    , { "action": "left" }
-                    , { "action": "p1" }
-                    , { "action": "right" }
-                    , { "action": "p1" }
-                    , { "action": "right" }
-                    , { "action": "p1" }
-                    , { "action": "bulb" }
                     ]
-          , "p1": [ { "action": "forward" }, { "action": "forward" } ]
-          }
-}
-
-
-level_3_2 = { "board":
-  [ [ {}
-    , { "elev": 4, "goal": true }
-    , {}
-    , { "elev": 4, "goal": true }
-    , {}
-    , { "elev": 4, "goal": true }
-    , {}
-    ]
-  , [ { "elev": 2 }
-    , { "elev": 4 }
-    , { "elev": 2, "goal": true }
-    , { "elev": 4 }
-    , { "elev": 2, "goal": true }
-    , { "elev": 4 }
-    , { "elev": 2, "goal": true }
-    ]
-  , [ {}, { "lift": true }, {}, { "lift": true }, {}, { "lift": true }, {} ]
-  ]
-, "bot": { "x": 0, "y": 2, "dir": 1 }
-, "prog": { "main": [ { "action": "p1" }
-                    , { "action": "left" }
-                    , { "action": "p1" }
-                    , { "action": "left" }
-                    , { "action": "p1" }
-                    ]
-          , "p1": [ { "action": "forward" }
-                  , { "action": "left" }
-                  , { "action": "bulb" }
-                  , { "action": "bulb" }
-                  , { "action": "forward" }
-                  , { "action": "forward" }
-                  , { "action": "bulb" }
-                  , { "action": "p2" }
-                  ]
-          , "p2": [ { "action": "right" }
-                  , { "action": "right" }
-                  , { "action": "forward" }
-                  , { "action": "left" }
-                  , { "action": "jump" }
-                  , { "action": "bulb" }
-                  , { "action": "right" }
-                  , { "action": "jump" }
-                  ]
-          }
-}
-
-level_6_7 = { "board":
-  [ [ { "elev": 1 }
-    , { "elev": 1 }
-    , { "elev": 1, "color": "green" }
-    , {}
-    , { "color": "green" }
-    , { "elev": 1 }
-    , { "elev": 1, "color": "red" }
-    ]
-  , [ {}, {}, {}, {}, {}, {}, { "elev": 1, "color": "green" } ]
-  , [ { "elev": 2, "color": "red" }
-    , { "elev": 2 }
-    , { "elev": 2 }
-    , { "elev": 2, "color": "red" }
-    , {}
-    , { "elev": 2, "goal": true }
-    , {}
-    ]
-  , [ { "elev": 2 }
-    , {}
-    , {}
-    , { "elev": 2, "color": "green" }
-    , {}
-    , { "elev": 2 }
-    , {}
-    ]
-  , [ { "elev": 2, "color": "red" }
-    , { "elev": 1, "color": "green" }
-    , { "elev": 1, "color": "red" }
-    , { "color": "red", "elev": 3 }
-    , { "color": "green", "elev": 3 }
-    , { "color": "red", "elev": 2 }
-    , { "color": "green" }
-    ]
-  , [ {}, {}, { "color": "green" }, {}, {}, {}, { "elev": 1 } ]
-  , [ {}
-    , {}
-    , { "color": "red" }
-    , { "elev": 1, "color": "green" }
-    , { "elev": 1 }
-    , { "elev": 1 }
-    , { "elev": 1, "color": "red" }
-    ]
-  ]
-, "bot": { "x": 0, "y": 0, "dir": 1 }
-, "prog": { "main": [ { "action": "p1" } ]
-          , "p1": [ { "action": "bulb" }
-                  , { "action": "right", "color": "red" }
-                  , { "action": "bulb", "color": "red" }
-                  , { "action": "forward" }
-                  , { "action": "jump", "color": "green" }
-                  , { "action": "p1" }
-                  ]
-          }
-}
+            }
+  }
 
 rgb = (clr) ->
   { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
@@ -149,7 +148,7 @@ rgbObj = (clr) ->
   g: ((hex & 0xff00) >> 8) / 255
   b: (hex & 0xff) / 255
 
-speed = 1
+speed = 2
 
 canvas   = document.createElement 'canvas'
 renderer =
@@ -255,7 +254,8 @@ step = (x, y, height=2, color=null, lift=false) ->
   grp.position.y = -y * 200
   grp
 
-game = Lightbot.Game.load level_1_3
+cur_level = localStorage.getItem('level') ? (k for k of levels)[0]
+game = Lightbot.Game.load levels[cur_level]
 
 animating = 0
 animateTick = ->
@@ -312,7 +312,7 @@ bulbBot = ->
 
 colorBot = (color) ->
   #console.log 'colorBot'
-  animate body.material.color, 0, rgbObj('gray')
+  animate body.material.color, 0, rgbObj(color ? 'gray')
 
 toggleGoal = (x, y, tagged) ->
   #console.log 'toggleGoal', x, y, tagged
@@ -364,11 +364,13 @@ bot.rotation.y = (4-game.bot.dir) * Math.PI / 2
 # set up draggable stuff
 prev_coords = [ null, null ]
 document.body.addEventListener 'mousedown', (e) ->
+  return unless e.target in [document.body, renderer.domElement]
   prev_coords[e.button] = [ e.clientX, e.clientY ]
   renderer.domElement.style.cursor = 'move'
   e.preventDefault()
 
 document.body.addEventListener 'mouseup', (e) ->
+  return unless e.target in [document.body, renderer.domElement]
   prev_coords[e.button] = null
   renderer.domElement.style.cursor = 'default'
   for attr in ['rotation', 'position', 'scale']
@@ -398,6 +400,17 @@ document.getElementById('reset').addEventListener 'click', (e) ->
 document.getElementById('stop').addEventListener 'click', (e) ->
   animating = 0
   false
+
+lvl_sel = document.getElementById 'level'
+for lvl of levels
+  opt = document.createElement 'option'
+  txt = document.createTextNode lvl
+  opt.appendChild txt
+  opt.selected = true if lvl is cur_level
+  lvl_sel.appendChild opt
+lvl_sel.addEventListener 'change', (e) ->
+  localStorage.setItem 'level', e.target.selectedOptions[0].firstChild.nodeValue
+  window.location.reload()
 
 window.addEventListener 'mousewheel', (e) ->
   factor = e.wheelDelta / 100
