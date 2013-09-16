@@ -255,7 +255,7 @@ step = (x, y, height=2, color=null, lift=false) ->
   grp.position.y = -y * 200
   grp
 
-game = Lightbot.Game.load level_6_7
+game = Lightbot.Game.load level_1_3
 
 animating = 0
 animateTick = ->
@@ -285,7 +285,6 @@ moveBotTo = (x, y, jump=true) ->
     from_z = bot.position.z
     if to_z isnt from_z # if jumping
       coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
-    console.log from: JSON.stringify(bot.position.toArray()), to: JSON.stringify(coords)
 
 turnBotTo = (dir) ->
   #console.log 'turnBotTo', dir
@@ -314,6 +313,10 @@ toggleGoal = (x, y, tagged) ->
   #console.log 'toggleGoal', x, y, tagged
   animate tops[y][x].material.color, 0,
     rgbObj(if tagged then 'yellow' else 'teal')
+
+gameOver = (reason) ->
+  animate({}, 0, {}).onStart ->
+    document.getElementById('status').firstChild.nodeValue = "You #{reason}"
 
 # stack steps
 for row, y in game.board
@@ -403,7 +406,7 @@ game.on 'moveBot',        moveBotTo
 game.on 'turnBot',        turnBotTo
 game.on 'liftMove',       moveLiftTo
 game.on 'toggleGoal',     toggleGoal
-#game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
+game.on 'gameOver',       gameOver
 game.tick() while not game.over()
 
 # start animations
