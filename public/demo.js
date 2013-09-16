@@ -583,13 +583,14 @@
       z: [to_z]
     };
     tween = animate(bot.position, 1000 / speed, coords);
-    return tween.onStart(function() {
+    tween.onStart(function() {
       var from_z, _ref1;
       from_z = bot.position.z;
       if (to_z !== from_z && jump) {
         return ([].splice.apply(coords.z, [1, 0].concat(_ref1 = Math.max(to_z, from_z) + 100)), _ref1);
       }
     });
+    return tween;
   };
 
   turnBotTo = function(dir) {
@@ -609,12 +610,15 @@
   };
 
   moveLiftTo = function(x, y, elev) {
-    var lift;
+    var bot_tween, lift, lift_tween;
     lift = tops[y][x];
-    animate(lift.position, 1000 / speed, {
+    lift_tween = animate(lift.position, 1000 / speed, {
       z: 1 + 100 * elev
     });
-    return moveBotTo(x, y, false);
+    bot_tween = moveBotTo(x, y, false);
+    animations.pop();
+    animations.pop();
+    return animations.push([lift_tween, bot_tween]);
   };
 
   bulbBot = function() {
@@ -801,8 +805,13 @@
     cur = first = animations.shift();
     for (_l = 0, _len2 = animations.length; _l < _len2; _l++) {
       tween = animations[_l];
-      cur.chain(tween);
-      cur = tween;
+      if (tween instanceof Array) {
+        cur.chain.apply(cur, tween);
+        cur = tween[0];
+      } else {
+        cur.chain(tween);
+        cur = tween;
+      }
     }
     first.start();
     return animateTick();

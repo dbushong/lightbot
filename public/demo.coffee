@@ -288,6 +288,7 @@ moveBotTo = (x, y, jump=true) ->
   tween.onStart ->
     from_z = bot.position.z
     coords.z[1..0] = Math.max(to_z, from_z) + 100 if to_z isnt from_z and jump
+  tween
 
 turnBotTo = (dir) ->
   #console.log 'turnBotTo', dir
@@ -302,8 +303,11 @@ turnBotTo = (dir) ->
 moveLiftTo = (x, y, elev) ->
   #console.log 'moveLiftTo', x, y, elev
   lift = tops[y][x]
-  animate lift.position, 1000/speed, z: 1 + 100 * elev
-  moveBotTo x, y, false
+  lift_tween = animate lift.position, 1000/speed, z: 1 + 100 * elev
+  bot_tween  = moveBotTo x, y, false
+  animations.pop()
+  animations.pop()
+  animations.push [ lift_tween, bot_tween ]
 
 bulbBot = ->
   #console.log 'bulbBot'
@@ -431,10 +435,15 @@ game.tick() while not game.over()
 
 # start animations
 setTimeout (->
+  # note: dies horribly if first animation is an array
   cur = first = animations.shift()
   for tween in animations
-    cur.chain tween
-    cur = tween
+    if tween instanceof Array
+      cur.chain tween...
+      cur = tween[0]
+    else
+      cur.chain tween
+      cur = tween
   first.start()
   animateTick()
 ), 0
