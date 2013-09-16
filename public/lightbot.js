@@ -223,8 +223,8 @@ return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof requi
               if (instr.action === 'forward') {
                 if (next.elev === square.elev) {
                   this.bot.moveTo(x, y);
+                  this.emit('moveBot', x, y);
                 }
-                this.emit('moveBot', x, y);
               } else {
                 diff = next.elev - square.elev;
                 if (diff === 1 || diff < 0) {

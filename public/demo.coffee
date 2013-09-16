@@ -143,13 +143,15 @@ level_6_7 = { "board":
 rgb = (clr) ->
   { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
 
+speed = 1
+
 renderer = new THREE.WebGLRenderer antialias: true
 #renderer = new THREE.CanvasRenderer antialias: true
 renderer.setSize( window.innerWidth, window.innerHeight )
 document.body.appendChild( renderer.domElement )
 
 window.camera = camera = new THREE.OrthographicCamera -1e7,
-  1e7, 1e7, -1e7, -1e7, 1e7
+  1e7, 1e7, -1e7, -1e8, 1e7
 
 scene = new THREE.Scene
 
@@ -263,6 +265,7 @@ animate = (obj, ms, to) ->
   animateTick() if animating is 1
 
 moveBotTo = (x, y, jump=true) ->
+  #console.log 'moveBotTo', x, y
   coords = x: x * 200, y: y * -200
   elev   = game.board[y][x].elev
   to_z   = body_height / 2 + 1 + elev * 100
@@ -271,32 +274,37 @@ moveBotTo = (x, y, jump=true) ->
   if to_z isnt from_z # if jumping
     coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
 
-  animate bot.position, 1000, coords
+  animate bot.position, 1000/speed, coords
 
 turnBotTo = (dir) ->
+  #console.log 'turnBotTo', dir
   # TODO: don't do stupid turns
   #cur_dir = Math.round(bot.rotation.y / Math.PI * 2)
   #0 -> 1  -pi/2
   #1 -> 2  
-  animate bot.rotation, 1000, y: (4-dir) * Math.PI / 2
+  animate bot.rotation, 1000/speed, y: (4-dir) * Math.PI / 2
 
 moveLiftTo = (x, y, elev) ->
+  #console.log 'moveLiftTo', x, y, elev
   lift = tops[y][x]
-  animate lift.position, 1000, z: 1 + 100 * elev
+  animate lift.position, 1000/speed, z: 1 + 100 * elev
   moveBotTo x, y, false
 
 bulbBot = ->
+  #console.log 'bulbBot'
   hcolor = head.material.color
   hcolor.setHex rgb('yellow')
   updateScene()
-  setTimeout (-> hcolor.setHex rgb('gray') ; updateScene()), 500
+  setTimeout (-> hcolor.setHex rgb('gray') ; updateScene()), 500/speed
 
 colorBot = (color) ->
+  #console.log 'colorBot'
   bcolor = body.material.color
   bcolor.setHex rgb(color ? 'gray')
   updateScene()
 
 toggleGoal = (x, y, tagged) ->
+  #console.log 'toggleGoal', x, y, tagged
   tops[y][x].material.color.setHex rgb(if tagged then 'yellow' else 'teal')
   updateScene()
 
@@ -385,4 +393,4 @@ game.on 'turnBot',    turnBotTo
 game.on 'liftMove',   moveLiftTo
 game.on 'toggleGoal', toggleGoal
 game.on 'gameOver',   (reason) -> coords.nodeValue = "You #{reason}"
-setInterval (-> game.tick()), 500
+setInterval (-> game.tick()), 1000/speed

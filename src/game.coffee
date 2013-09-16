@@ -103,8 +103,9 @@ module.exports = class LightbotGame extends EventEmitter
           next = @board[y]?[x]
           if next
             if instr.action is 'forward'
-              @bot.moveTo x, y if next.elev is square.elev
-              @emit 'moveBot', x, y
+              if next.elev is square.elev
+                @bot.moveTo x, y
+                @emit 'moveBot', x, y
             else # if instr.action is 'jump'
               diff = next.elev - square.elev
               # can jump up 1 or down any
