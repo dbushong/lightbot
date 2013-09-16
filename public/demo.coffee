@@ -275,24 +275,29 @@ animate = (obj, ms, to) ->
   animations.push tween
   tween
 
+botX = (x)    -> x * 200
+botY = (y)    -> y * -200
+botZ = (elev) -> body_height / 2 + 1 + elev * 100
+
 moveBotTo = (x, y, jump=true) ->
-  coords = x: x * 200, y: y * -200
   elev   = game.board[y][x].elev
+  to_z   = botZ elev
+  coords = x: botX(x), y: botY(y), z: [ to_z ]
 
   tween = animate bot.position, 1000/speed, coords
   tween.onStart ->
-    to_z   = body_height / 2 + 1 + elev * 100
     from_z = bot.position.z
-    if to_z isnt from_z # if jumping
-      coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
+    coords.z[1..0] = Math.max(to_z, from_z) + 100 if to_z isnt from_z and jump
 
 turnBotTo = (dir) ->
   #console.log 'turnBotTo', dir
-  # TODO: don't do stupid turns
-  #cur_dir = Math.round(bot.rotation.y / Math.PI * 2)
-  #0 -> 1  -pi/2
-  #1 -> 2  
-  animate bot.rotation, 1000/speed, y: (4-dir) * Math.PI / 2
+  to = y: (4-dir) * Math.PI / 2
+  animate(bot.rotation, 1000/speed, to).onStart ->
+    cur_dir = (4 - (Math.round(bot.rotation.y / Math.PI * 2) % 4)) % 4
+    if (dir - cur_dir) % 2 # if odd, i.e. 1/4 turn
+      to.y = (4-dir) * Math.PI / 2
+    else
+      to.y = (4-dir) * Math.PI / 2
 
 moveLiftTo = (x, y, elev) ->
   #console.log 'moveLiftTo', x, y, elev
@@ -351,8 +356,10 @@ for prop, def of defaults
 scene.add group
 
 # initial bot position
-moveBotTo game.bot.x, game.bot.y, false
-turnBotTo game.bot.dir
+bot.position.x = botX game.bot.x
+bot.position.y = botY game.bot.y
+bot.position.z = botZ game.board[game.bot.y][game.bot.x].elev
+bot.rotation.y = (4-game.bot.dir) * Math.PI / 2
 
 # set up draggable stuff
 prev_coords = [ null, null ]
