@@ -158,7 +158,7 @@ renderer =
   else
     new THREE.CanvasRenderer antialias: true
 
-renderer.setSize window.innerWidth, window.innerHeight
+renderer.setSize window.innerWidth - 5, window.innerHeight - 5
 document.body.appendChild renderer.domElement
 
 window.camera = camera = new THREE.OrthographicCamera -1e7,
@@ -186,12 +186,11 @@ wireframe = new THREE.MeshBasicMaterial
   wireframe: true, wireframeLinewidth: 2, color: 0x666666
 
 # "floor"
-sky = new THREE.Mesh(
-  new THREE.CubeGeometry 10000, 10000, 10000
-  new THREE.MeshBasicMaterial color: 0, side: THREE.BackSide
+floor = new THREE.Mesh(
+  new THREE.PlaneGeometry 100000, 100000
+  new THREE.MeshBasicMaterial color: 0x333333
 )
-sky.position.z = 5000
-#group.add sky
+group.add floor
 
 # bot model
 window.bot = bot = new THREE.Object3D
@@ -286,6 +285,7 @@ moveBotTo = (x, y, jump=true) ->
     from_z = bot.position.z
     if to_z isnt from_z # if jumping
       coords.z = if jump then [ Math.max(to_z, from_z) + 100, to_z ] else to_z
+    console.log from: JSON.stringify(bot.position.toArray()), to: JSON.stringify(coords)
 
 turnBotTo = (dir) ->
   #console.log 'turnBotTo', dir
@@ -383,6 +383,10 @@ document.getElementById('reset').addEventListener 'click', (e) ->
     group[prop].fromArray def
     localStorage.removeItem prop
   updateScene()
+  false
+
+document.getElementById('stop').addEventListener 'click', (e) ->
+  animating = 0
   false
 
 window.addEventListener 'mousewheel', (e) ->
