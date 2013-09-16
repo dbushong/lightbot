@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+PATH=./node_modules/.bin:$PATH
+
+coffee -o lib/ -c src/*.coffee
+browserify -o public/lightbot.js -e lib/index.js -s Lightbot
+coffee public/make-levels-js.coffee > public/levels.js

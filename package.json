@@ -6,7 +6,7 @@
 , "devDependencies": { "coffee-script": "1.6.x"
                      , "browserify": "2.29.x"
                      }
-, "scripts":         { "prepublish": "./node_modules/.bin/coffee -o lib/ -c src/*.coffee && ./node_modules/.bin/browserify -o public/lightbot.js -e lib/index.js -s Lightbot" }
+, "scripts":         { "prepublish": "./prepublish" }
 , "repository" :     { "type" : "git"
                      , "url" : "http://github.com/dbushong/lightbot.git"
                      }

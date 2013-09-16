@@ -1,144 +1,3 @@
-levels =
-  level_1_3: { "board":
-    [ [ {}, {}, { "goal": true } ]
-    , [ { "elev": 1 }, { "elev": 1 }, { "elev": 1 } ]
-    , [ {}, {}, {} ]
-    ]
-  , "bot": { "x": 0, "y": 2, "dir": 1 }
-  , "prog": { "main": [ { "action": "forward" }
-                      , { "action": "forward" }
-                      , { "action": "left" }
-                      , { "action": "jump" }
-                      , { "action": "jump" }
-                      , { "action": "bulb" }
-                      ]
-            }
-  }
-
-  level_2_2: { "board":
-    [ [ { "elev": 2 }, {}, { "elev": 2 }, { "elev": 2 }, { "elev": 2 } ]
-    , [ { "elev": 2 }, {}, { "elev": 2 }, {},            { "elev": 2 } ]
-    , [ { "elev": 2 }, { "elev": 2 }, {"elev": 2}, {}, {"elev": 2, "goal": true} ]
-    ]
-  , "bot": { "x": 0, "y": 0, "dir": 2 }
-  , "prog": { "main": [ { "action": "p1" }
-                      , { "action": "left" }
-                      , { "action": "p1" }
-                      , { "action": "left" }
-                      , { "action": "p1" }
-                      , { "action": "right" }
-                      , { "action": "p1" }
-                      , { "action": "right" }
-                      , { "action": "p1" }
-                      , { "action": "bulb" }
-                      ]
-            , "p1": [ { "action": "forward" }, { "action": "forward" } ]
-            }
-  }
-
-  level_3_2: { "board":
-    [ [ {}
-      , { "elev": 4, "goal": true }
-      , {}
-      , { "elev": 4, "goal": true }
-      , {}
-      , { "elev": 4, "goal": true }
-      , {}
-      ]
-    , [ { "elev": 2 }
-      , { "elev": 4 }
-      , { "elev": 2, "goal": true }
-      , { "elev": 4 }
-      , { "elev": 2, "goal": true }
-      , { "elev": 4 }
-      , { "elev": 2, "goal": true }
-      ]
-    , [ {}, { "lift": true }, {}, { "lift": true }, {}, { "lift": true }, {} ]
-    ]
-  , "bot": { "x": 0, "y": 2, "dir": 1 }
-  , "prog": { "main": [ { "action": "p1" }
-                      , { "action": "left" }
-                      , { "action": "p1" }
-                      , { "action": "left" }
-                      , { "action": "p1" }
-                      ]
-            , "p1": [ { "action": "forward" }
-                    , { "action": "left" }
-                    , { "action": "bulb" }
-                    , { "action": "bulb" }
-                    , { "action": "forward" }
-                    , { "action": "forward" }
-                    , { "action": "bulb" }
-                    , { "action": "p2" }
-                    ]
-            , "p2": [ { "action": "right" }
-                    , { "action": "right" }
-                    , { "action": "forward" }
-                    , { "action": "left" }
-                    , { "action": "jump" }
-                    , { "action": "bulb" }
-                    , { "action": "right" }
-                    , { "action": "jump" }
-                    ]
-            }
-  }
-
-  level_6_7: { "board":
-    [ [ { "elev": 1 }
-      , { "elev": 1 }
-      , { "elev": 1, "color": "green" }
-      , {}
-      , { "color": "green" }
-      , { "elev": 1 }
-      , { "elev": 1, "color": "red" }
-      ]
-    , [ {}, {}, {}, {}, {}, {}, { "elev": 1, "color": "green" } ]
-    , [ { "elev": 2, "color": "red" }
-      , { "elev": 2 }
-      , { "elev": 2 }
-      , { "elev": 2, "color": "red" }
-      , {}
-      , { "elev": 2, "goal": true }
-      , {}
-      ]
-    , [ { "elev": 2 }
-      , {}
-      , {}
-      , { "elev": 2, "color": "green" }
-      , {}
-      , { "elev": 2 }
-      , {}
-      ]
-    , [ { "elev": 2, "color": "red" }
-      , { "elev": 1, "color": "green" }
-      , { "elev": 1, "color": "red" }
-      , { "color": "red", "elev": 3 }
-      , { "color": "green", "elev": 3 }
-      , { "color": "red", "elev": 2 }
-      , { "color": "green" }
-      ]
-    , [ {}, {}, { "color": "green" }, {}, {}, {}, { "elev": 1 } ]
-    , [ {}
-      , {}
-      , { "color": "red" }
-      , { "elev": 1, "color": "green" }
-      , { "elev": 1 }
-      , { "elev": 1 }
-      , { "elev": 1, "color": "red" }
-      ]
-    ]
-  , "bot": { "x": 0, "y": 0, "dir": 1 }
-  , "prog": { "main": [ { "action": "p1" } ]
-            , "p1": [ { "action": "bulb" }
-                    , { "action": "right", "color": "red" }
-                    , { "action": "bulb", "color": "red" }
-                    , { "action": "forward" }
-                    , { "action": "jump", "color": "green" }
-                    , { "action": "p1" }
-                    ]
-            }
-  }
-
 rgb = (clr) ->
   { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
 
@@ -148,7 +7,7 @@ rgbObj = (clr) ->
   g: ((hex & 0xff00) >> 8) / 255
   b: (hex & 0xff) / 255
 
-speed = 2
+speed = 1
 
 canvas   = document.createElement 'canvas'
 renderer =
@@ -369,6 +228,7 @@ bot.position.x = botX game.bot.x
 bot.position.y = botY game.bot.y
 bot.position.z = botZ game.board[game.bot.y][game.bot.x].elev
 bot.rotation.y = (4-game.bot.dir) * Math.PI / 2
+updateScene()
 
 # set up draggable stuff
 prev_coords = [ null, null ]
@@ -451,4 +311,4 @@ setTimeout (->
       cur = tween
   first.start()
   animateTick()
-), 0
+), 500
