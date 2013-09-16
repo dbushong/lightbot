@@ -145,10 +145,15 @@ rgb = (clr) ->
 
 speed = 1
 
-renderer = new THREE.WebGLRenderer antialias: true
-#renderer = new THREE.CanvasRenderer antialias: true
-renderer.setSize( window.innerWidth, window.innerHeight )
-document.body.appendChild( renderer.domElement )
+canvas   = document.createElement 'canvas'
+renderer =
+  if window.WebGLRenderingContext and canvas.getContext('webgl') and canvas.getContext('experimental-webgl')
+    new THREE.WebGLRenderer antialias: true
+  else
+    new THREE.CanvasRenderer antialias: true
+
+renderer.setSize window.innerWidth, window.innerHeight
+document.body.appendChild renderer.domElement
 
 window.camera = camera = new THREE.OrthographicCamera -1e7,
   1e7, 1e7, -1e7, -1e8, 1e7
