@@ -16,7 +16,10 @@ renderer =
   else
     new THREE.CanvasRenderer antialias: true
 
-renderer.setSize window.innerWidth - 5, window.innerHeight - 5
+max_width  = window.innerWidth - 5
+max_height = window.innerHeight - 5
+width = height = Math.min window.innerWidth - 5, window.innerHeight - 5
+renderer.setSize width, height
 document.body.appendChild renderer.domElement
 
 window.camera = camera = new THREE.OrthographicCamera -1e7,
