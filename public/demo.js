@@ -2,20 +2,19 @@
 (function() {
   var animate, animateTick, animating, animations, arrow, beige, body, body_height, body_radius, bodyg, bot, botX, botY, botZ, bulbBot, camera, canvas, clr, colorBot, cur_level, def, def_level, defaults, flat_blue, flat_gray, floor, game, gameOver, gray, group, head, head_radius, headg, height, i, k, light, lvl, lvl_sel, max_height, max_width, moveBotTo, moveLiftTo, opt, pref, prev_coords, prop, renderer, rgb, rgbObj, row, scene, speed, square, step, stp, toggleGoal, tops, tri, turnBotTo, txt, updateScene, width, wireframe, x, y, _i, _j, _k, _len, _len1, _ref, _ref1, _ref2, _ref3;
 
-  rgb = function(clr) {
-    return {
-      green: 0x00ff00,
-      red: 0xff0000,
-      teal: 0x00bbbb,
-      yellow: 0xffff00,
-      gray: 0xcccccc,
-      beige: 0xf5f5dc
-    }[clr];
+  rgb = {
+    green: 0x00ff00,
+    red: 0xff0000,
+    teal: 0x00bbbb,
+    yellow: 0xffff00,
+    gray: 0xcccccc,
+    beige: 0xf5f5dc,
+    magenta: 0xff00ff
   };
 
   rgbObj = function(clr) {
     var hex;
-    hex = rgb(clr);
+    hex = rgb[clr];
     return {
       r: (hex >> 16) / 255,
       g: ((hex & 0xff00) >> 8) / 255,
@@ -57,22 +56,22 @@
 
   window.light = light = new THREE.PointLight(0xffffff, 1.0, 0);
 
-  light.position.set(500, -500, 1000);
+  light.position.set(500, -700, 1000);
 
   group.add(light);
 
   flat_gray = new THREE.MeshLambertMaterial({
-    color: rgb('gray'),
+    color: rgb.gray,
     shading: THREE.FlatShading
   });
 
   beige = new THREE.MeshLambertMaterial({
-    color: rgb('beige'),
+    color: rgb.beige,
     shading: THREE.FlatShading
   });
 
   gray = new THREE.MeshLambertMaterial({
-    color: rgb('gray')
+    color: rgb.gray
   });
 
   flat_blue = new THREE.MeshLambertMaterial({
@@ -105,7 +104,7 @@
   headg = new THREE.SphereGeometry(head_radius, 40);
 
   head = new THREE.Mesh(headg, new THREE.MeshLambertMaterial({
-    color: rgb('gray')
+    color: rgb.gray
   }));
 
   head.name = 'head';
@@ -150,8 +149,8 @@
 
   tops = [];
 
-  step = function(x, y, height, color, lift) {
-    var geom, grp, mat, plane, pole, top;
+  step = function(x, y, height, color, lift, warp) {
+    var arc, arcgeom, d, dy, geom, grp, mat, plane, pole, top, _ref;
     if (height == null) {
       height = 2;
     }
@@ -160,6 +159,9 @@
     }
     if (lift == null) {
       lift = false;
+    }
+    if (warp == null) {
+      warp = null;
     }
     grp = new THREE.Object3D;
     grp.name = 'step';
@@ -175,12 +177,31 @@
       }
       tops[y][x] = grp;
     }
+    if (warp) {
+      color = 'magenta';
+      if (!((_ref = tops[warp[1]]) != null ? _ref[warp[0]] : void 0)) {
+        console.log('warpArc', [x, y], warp);
+        dy = warp[1] - y;
+        d = Math.sqrt(Math.pow(warp[0] - x, 2) + dy * dy);
+        arcgeom = new THREE.TorusGeometry(d * 200 / 2, 7, 8, 20, Math.PI);
+        arc = new THREE.Mesh(arcgeom, new THREE.MeshBasicMaterial({
+          color: rgb.green,
+          opacity: 0.5,
+          transparent: true
+        }));
+        arc.rotation.x = Math.PI / 2;
+        arc.rotation.y = dy ? Math.asin(d / dy) : 0;
+        arc.position.x = (warp[0] - x) / 2 * 200;
+        arc.position.y = (warp[1] - y) / 2 * -200;
+        grp.add(arc);
+      }
+    }
     if (color) {
       top = new THREE.Object3D;
       top.position.z = height / 2 + 1;
       geom = new THREE.PlaneGeometry(200, 200);
       mat = new THREE.MeshBasicMaterial({
-        color: rgb(color)
+        color: rgb[color]
       });
       plane = new THREE.Mesh(geom, mat);
       if (tops[y] == null) {
@@ -336,12 +357,12 @@
         group.add(stp);
       } else {
         if (square.elev === 0) {
-          stp = step(x, y, null, clr);
+          stp = step(x, y, null, clr, false, square.warp);
           stp.position.z = 1;
           group.add(stp);
         } else {
           for (i = _k = 0, _ref3 = square.elev; 0 <= _ref3 ? _k < _ref3 : _k > _ref3; i = 0 <= _ref3 ? ++_k : --_k) {
-            stp = step(x, y, 100, (i === (square.elev - 1) ? clr : null));
+            stp = step(x, y, 100, (i === (square.elev - 1) ? clr : null), false, (i === (square.elev - 1) ? square.warp : false));
             stp.position.z = 50 + 100 * i;
             group.add(stp);
           }

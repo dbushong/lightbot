@@ -1,8 +1,14 @@
-rgb = (clr) ->
-  { green: 0x00ff00, red: 0xff0000, teal: 0x00bbbb, yellow: 0xffff00, gray: 0xcccccc, beige: 0xf5f5dc }[clr]
+rgb =
+  green:   0x00ff00
+  red:     0xff0000
+  teal:    0x00bbbb
+  yellow:  0xffff00
+  gray:    0xcccccc
+  beige:   0xf5f5dc
+  magenta: 0xff00ff
 
 rgbObj = (clr) ->
-  hex = rgb clr
+  hex = rgb[clr]
   r: (hex >> 16) / 255
   g: ((hex & 0xff00) >> 8) / 255
   b: (hex & 0xff) / 255
@@ -35,13 +41,13 @@ group.name = 'group'
 
 # light for phong shading
 window.light = light = new THREE.PointLight 0xffffff, 1.0, 0
-light.position.set 500, -500, 1000
+light.position.set 500, -700, 1000
 group.add light
 
 # basic styles
-flat_gray = new THREE.MeshLambertMaterial color: rgb('gray'), shading: THREE.FlatShading
-beige = new THREE.MeshLambertMaterial color: rgb('beige'), shading: THREE.FlatShading
-gray = new THREE.MeshLambertMaterial color: rgb('gray')
+flat_gray = new THREE.MeshLambertMaterial color: rgb.gray, shading: THREE.FlatShading
+beige = new THREE.MeshLambertMaterial color: rgb.beige, shading: THREE.FlatShading
+gray = new THREE.MeshLambertMaterial color: rgb.gray
 flat_blue = new THREE.MeshLambertMaterial color: 0x0000ff, shading: THREE.FlatShading
 wireframe = new THREE.MeshBasicMaterial
   wireframe: true, wireframeLinewidth: 2, color: 0x666666
@@ -60,7 +66,7 @@ head_radius = 40
 body_radius = 40
 body_height = 150
 headg = new THREE.SphereGeometry head_radius, 40
-head  = new THREE.Mesh headg, new THREE.MeshLambertMaterial(color: rgb('gray'))
+head  = new THREE.Mesh headg, new THREE.MeshLambertMaterial(color: rgb.gray)
 head.name = 'head'
 head.position.y = body_height/2 + head_radius
 bot.add head
@@ -83,7 +89,7 @@ group.add bot
 
 # create one step of a level
 tops = []
-step = (x, y, height=2, color=null, lift=false) ->
+step = (x, y, height=2, color=null, lift=false, warp=null) ->
   grp = new THREE.Object3D
   grp.name = 'step'
 
@@ -99,12 +105,29 @@ step = (x, y, height=2, color=null, lift=false) ->
     tops[y] ?= []
     tops[y][x] = grp
 
+  if warp
+    color = 'magenta'
+    unless tops[warp[1]]?[warp[0]]
+      console.log 'warpArc', [x, y], warp
+      dy = warp[1] - y
+      d = Math.sqrt(Math.pow(warp[0] - x, 2) + dy*dy)
+      # TODO: use TubeGeometry or TorusKnotGeometry?
+      arcgeom = new THREE.TorusGeometry d * 200 / 2, 7, 8, 20, Math.PI
+      arc = new THREE.Mesh arcgeom,
+              new THREE.MeshBasicMaterial
+                color: rgb.green, opacity: 0.5, transparent: true
+      arc.rotation.x = Math.PI / 2
+      arc.rotation.y = if dy then Math.asin(d / dy) else 0
+      arc.position.x = (warp[0] - x) / 2 * 200
+      arc.position.y = (warp[1] - y) / 2 * -200
+      grp.add arc
+
   if color
     top   = new THREE.Object3D
     top.position.z = height/2+1
 
     geom  = new THREE.PlaneGeometry 200, 200
-    mat   = new THREE.MeshBasicMaterial color: rgb(color)
+    mat   = new THREE.MeshBasicMaterial color: rgb[color]
     plane = new THREE.Mesh geom, mat
     tops[y] ?= []
     tops[y][x] = plane
@@ -205,12 +228,12 @@ for row, y in game.board
       group.add stp
     else
       if square.elev is 0
-        stp = step x, y, null, clr
+        stp = step x, y, null, clr, false, square.warp
         stp.position.z = 1
         group.add stp
       else
         for i in [0...square.elev]
-          stp = step x, y, 100, (if i is (square.elev-1) then clr else null)
+          stp = step x, y, 100, (if i is (square.elev-1) then clr else null), false, (if i is (square.elev-1) then square.warp else false)
           stp.position.z = 50 + 100 * i
           group.add stp
 
